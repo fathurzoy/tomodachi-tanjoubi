@@ -1,7 +1,150 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { birthdays, zodiacData, translations, flags, langNames, getZodiac, getFortune } from './data/zodiac';
 
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || "";
+const GEMINI_KEYS = [
+    import.meta.env.VITE_GEMINI_API_KEY_1,
+    import.meta.env.VITE_GEMINI_API_KEY_2,
+    import.meta.env.VITE_GEMINI_API_KEY_3
+].filter(Boolean);
+
+// Session Storage Helpers for Caching
+const getCachedHoroscope = (name, month, day, lang) => {
+    try {
+        const key = `horoscope_${name}_${month}_${day}_${lang}`;
+        const item = sessionStorage.getItem(key);
+        return item ? JSON.parse(item) : null;
+    } catch (e) {
+        console.error("Error reading cache", e);
+        return null;
+    }
+};
+
+const setCachedHoroscope = (name, month, day, lang, data) => {
+    try {
+        const key = `horoscope_${name}_${month}_${day}_${lang}`;
+        sessionStorage.setItem(key, JSON.stringify(data));
+    } catch (e) {
+        console.error("Error writing cache", e);
+    }
+};
+
+const hasAnyCachedHoroscope = (name, month, day) => {
+    try {
+        const prefix = `horoscope_${name}_${month}_${day}_`;
+        for (let i = 0; i < sessionStorage.length; i++) {
+            const key = sessionStorage.key(i);
+            if (key && key.startsWith(prefix)) {
+                return true;
+            }
+        }
+        return false;
+    } catch (e) {
+        console.error("Error checking cache keys", e);
+        return false;
+    }
+};
+
+const getAnyCachedHoroscope = (name, month, day) => {
+    try {
+        const prefix = `horoscope_${name}_${month}_${day}_`;
+        for (let i = 0; i < sessionStorage.length; i++) {
+            const key = sessionStorage.key(i);
+            if (key && key.startsWith(prefix)) {
+                const item = sessionStorage.getItem(key);
+                if (item) {
+                    const parsed = JSON.parse(item);
+                    if (parsed && parsed.birthdayWish) {
+                        return {
+                            data: parsed,
+                            sourceLang: key.slice(prefix.length)
+                        };
+                    }
+                }
+            }
+        }
+        return null;
+    } catch (e) {
+        console.error("Error reading any cache", e);
+        return null;
+    }
+};
+
+async function fetchAiTranslation(originalData, targetLanguage) {
+    const languageNames = {
+        ja: "Japanese",
+        id: "Indonesian",
+        en: "English",
+        zh: "Chinese",
+        my: "Burmese (Myanmar)",
+        ne: "Nepali",
+        si: "Sinhala"
+    };
+
+    const targetLangName = languageNames[targetLanguage] || "Japanese";
+
+    const prompt = `You are a professional, warm translator for NICC (Nihon Indonesian Collaboration Community). Translate the following birthday/zodiac forecast JSON into ${targetLangName}. 
+    
+    You MUST output valid, pure JSON in ${targetLangName} language. Do NOT add any markdown wrapping like \`\`\`json or backticks, just output raw JSON text containing exactly the same keys and structure.
+    
+    CRITICAL: 
+    1. Maintain the exact same numerical scores in "luckScores". Do NOT change any of the numbers in love, money, study, and health.
+    2. Keep the elegant, polite, and warm tone of the Japanese astrologer (NICC style) but natural and grammatically correct in ${targetLangName}.
+    3. Do NOT add any new fields. Translate all string values of the keys: birthdayWish, characterReading, zodiacMessage, yearlyPrediction, solution, goodNews, and futureAdvice.
+    
+    Here is the JSON to translate:
+    ${JSON.stringify(originalData, null, 2)}`;
+
+    // Try keys sequentially, starting with a random index to distribute the load
+    const keysToTry = [...GEMINI_KEYS];
+    const startIdx = Math.floor(Math.random() * keysToTry.length);
+    const orderedKeys = [
+        ...keysToTry.slice(startIdx),
+        ...keysToTry.slice(0, startIdx)
+    ];
+
+    let lastError = null;
+
+    for (let i = 0; i < orderedKeys.length; i++) {
+        const key = orderedKeys[i];
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`;
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{ text: prompt }]
+                    }],
+                    generationConfig: {
+                        responseMimeType: "application/json"
+                    }
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`API error status ${response.status}`);
+            }
+
+            const data = await response.json();
+            const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (!rawText) {
+                throw new Error("Empty response from AI API");
+            }
+
+            const cleanJsonText = rawText.trim().replace(/^```json/, '').replace(/```$/, '').trim();
+            return JSON.parse(cleanJsonText);
+
+        } catch (err) {
+            console.warn(`Translation: Key index ${GEMINI_KEYS.indexOf(key)} failed, trying next...`, err);
+            lastError = err;
+        }
+    }
+
+    throw new Error(lastError ? `TRANSLATION_FAILED: ${lastError.message}` : "TRANSLATION_FAILED");
+}
 
 async function fetchGeminiHoroscope(name, month, day, zodiacName, language) {
     const languageNames = {
@@ -38,35 +181,56 @@ async function fetchGeminiHoroscope(name, month, day, zodiacName, language) {
     
     Keep the tone extremely positive, inspiring, and encouraging! Output JSON only.`;
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+    // Try keys sequentially, starting with a random index to distribute the load
+    const keysToTry = [...GEMINI_KEYS];
+    const startIdx = Math.floor(Math.random() * keysToTry.length);
+    const orderedKeys = [
+        ...keysToTry.slice(startIdx),
+        ...keysToTry.slice(0, startIdx)
+    ];
 
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            contents: [{
-                parts: [{ text: prompt }]
-            }],
-            generationConfig: {
-                responseMimeType: "application/json"
+    let lastError = null;
+
+    for (let i = 0; i < orderedKeys.length; i++) {
+        const key = orderedKeys[i];
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`;
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{ text: prompt }]
+                    }],
+                    generationConfig: {
+                        responseMimeType: "application/json"
+                    }
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`API error status ${response.status}`);
             }
-        })
-    });
 
-    if (!response.ok) {
-        throw new Error(`Gemini API error: ${response.statusText}`);
+            const data = await response.json();
+            const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (!rawText) {
+                throw new Error("Empty response from AI API");
+            }
+
+            const cleanJsonText = rawText.trim().replace(/^```json/, '').replace(/```$/, '').trim();
+            return JSON.parse(cleanJsonText);
+
+        } catch (err) {
+            console.warn(`Key index ${GEMINI_KEYS.indexOf(key)} failed, trying next...`, err);
+            lastError = err;
+        }
     }
 
-    const data = await response.json();
-    const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!rawText) {
-        throw new Error("Empty response from Gemini API");
-    }
-
-    const cleanJsonText = rawText.trim().replace(/^```json/, '').replace(/```$/, '').trim();
-    return JSON.parse(cleanJsonText);
+    throw new Error(lastError ? `ALL_KEYS_FAILED: ${lastError.message}` : "ALL_KEYS_FAILED");
 }
 
 const melody = [
@@ -87,16 +251,16 @@ export default function App() {
     const [currentMonth, setCurrentMonth] = useState(1);
     const [currentDay, setCurrentDay] = useState(1);
     const [currentZodiac, setCurrentZodiac] = useState(0);
-    const [isGuestMode, setIsGuestMode] = useState(true);
 
     // Interactive States
     const [flipped, setFlipped] = useState(false);
     const [easterEggs, setEasterEggs] = useState([]);
 
-    // Gemini AI state
+    // AI state
     const [aiHoroscope, setAiHoroscope] = useState(null);
     const [aiLoading, setAiLoading] = useState(false);
     const [aiError, setAiError] = useState(null);
+    const [showDetails, setShowDetails] = useState(false);
 
     // Audio Ref
     const [isPlaying, setIsPlaying] = useState(false);
@@ -116,6 +280,43 @@ export default function App() {
     const [inputMonth, setInputMonth] = useState('');
     const [inputDay, setInputDay] = useState('');
 
+    // Core function to fetch AI horoscope with key rotation and error handling
+    const triggerFetch = async (name, month, day, zodiacIdx, lang) => {
+        setAiLoading(true);
+        setAiError(null);
+        setAiHoroscope(null);
+        setShowDetails(false);
+
+        try {
+            // Check if there is already a forecast in ANY language for this person/date
+            const existing = getAnyCachedHoroscope(name, month, day);
+            let data;
+
+            if (existing) {
+                // Translate the existing forecast directly!
+                data = await fetchAiTranslation(existing.data, lang);
+            } else {
+                // Generate a fresh forecast for the first time
+                const zName = zodiacData[zodiacIdx].name[lang];
+                data = await fetchGeminiHoroscope(name, month, day, zName, lang);
+            }
+            
+            // Save success to sessionStorage cache
+            setCachedHoroscope(name, month, day, lang, data);
+            setAiHoroscope(data);
+        } catch (err) {
+            console.error("AI fortune action failed after trying all keys:", err);
+            const t = translations[lang] || translations['ja'];
+            setAiError(t.aiError || "⚠️ AI is having issues. Please try again later.");
+        } finally {
+            setAiLoading(false);
+        }
+    };
+
+    // Manual load function for AI horoscope
+    const handleTellFortune = () => {
+        triggerFetch(currentName, currentMonth, currentDay, currentZodiac, currentLang);
+    };
     // Sync routing based on path / search params
     useEffect(() => {
         const handleRouting = () => {
@@ -135,10 +336,8 @@ export default function App() {
                 let finalDay = parseInt(dayStr);
 
                 const today = new Date();
-                let isGuest = false;
 
                 if (!name || isNaN(finalMonth) || isNaN(finalDay)) {
-                    isGuest = true;
                     finalMonth = today.getMonth() + 1;
                     finalDay = today.getDate();
 
@@ -148,7 +347,6 @@ export default function App() {
                         finalName = birthdayPerson.name;
                         finalMonth = birthdayPerson.month;
                         finalDay = birthdayPerson.day;
-                        isGuest = false;
                     } else {
                         finalName = 'GUEST';
                     }
@@ -157,7 +355,6 @@ export default function App() {
                 setCurrentName(finalName);
                 setCurrentMonth(finalMonth);
                 setCurrentDay(finalDay);
-                setIsGuestMode(isGuest);
 
                 const zodiacIndex = getZodiac(finalMonth, finalDay);
                 setCurrentZodiac(zodiacIndex);
@@ -165,6 +362,19 @@ export default function App() {
                 // Set initial background theme
                 const z = zodiacData[zodiacIndex];
                 if (z) document.body.className = z.theme;
+
+                // Reset AI states and sync from cache if it exists
+                const cached = getCachedHoroscope(finalName, finalMonth, finalDay, currentLang);
+                if (cached) {
+                    setAiHoroscope(cached);
+                    setAiLoading(false);
+                    setAiError(null);
+                } else {
+                    setAiHoroscope(null);
+                    setAiLoading(false);
+                    setAiError(null);
+                }
+                setShowDetails(false);
             }
         };
 
@@ -176,57 +386,7 @@ export default function App() {
             window.removeEventListener('popstate', handleRouting);
             window.removeEventListener('hashchange', handleRouting);
         };
-    }, []);
-
-    // Load AI horoscope dynamically
-    useEffect(() => {
-        if (route !== 'card') return;
-
-        let active = true;
-        const loadAIHoroscope = async () => {
-            setAiLoading(true);
-            setAiError(null);
-            try {
-                const zName = zodiacData[currentZodiac].name[currentLang];
-                const data = await fetchGeminiHoroscope(currentName, currentMonth, currentDay, zName, currentLang);
-                if (active) {
-                    setAiHoroscope(data);
-                }
-            } catch (err) {
-                console.error("Gemini call failed, loading local fallback.", err);
-                if (active) {
-                    const z = zodiacData[currentZodiac];
-                    const t = translations[currentLang];
-                    const seed = currentZodiac + currentName.length;
-                    setAiHoroscope({
-                        birthdayWish: t.birthdayMsg(currentName),
-                        characterReading: z.character[currentLang],
-                        zodiacMessage: z.msg[currentLang],
-                        yearlyPrediction: z.msg[currentLang],
-                        solution: currentLang === 'id' ? "Tetap fokus dan selesaikan tantangan satu per satu." : "Stay focused and resolve challenges step by step.",
-                        goodNews: currentLang === 'id' ? "Peluang luar biasa dan kesuksesan baru menanti Anda!" : "Amazing opportunities and new milestones await you!",
-                        futureAdvice: currentLang === 'id' ? "Perbanyak koneksi baru dan terus perluas kemampuan bahasa Jepang Anda!" : "Expand your networks and continue building your Japanese fluency!",
-                        luckScores: {
-                            love: (Math.abs(seed * 7) % 5) + 1,
-                            money: (Math.abs(seed * 3) % 5) + 1,
-                            study: (Math.abs(seed * 11) % 5) + 1,
-                            health: (Math.abs(seed * 5) % 5) + 1
-                        }
-                    });
-                }
-            } finally {
-                if (active) {
-                    setAiLoading(false);
-                }
-            }
-        };
-
-        loadAIHoroscope();
-
-        return () => {
-            active = false;
-        };
-    }, [currentName, currentMonth, currentDay, currentZodiac, currentLang, route]);
+    }, [currentLang]);
 
     // Canvas particle effect
     useEffect(() => {
@@ -298,17 +458,17 @@ export default function App() {
     const startMusic = () => {
         if (activePlayingRef.current) return;
         userIntentionallyPausedRef.current = false;
-        
+
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
         if (!audioCtxRef.current) {
             audioCtxRef.current = new AudioContextClass();
         }
         const ctx = audioCtxRef.current;
-        
+
         if (ctx.state === 'suspended') {
             ctx.resume();
         }
-        
+
         activePlayingRef.current = true;
         setIsPlaying(true);
 
@@ -334,7 +494,7 @@ export default function App() {
                 currentNoteIndexRef.current = index >= melody.length ? 0 : index;
                 return;
             }
-            
+
             if (index >= melody.length) {
                 currentNoteIndexRef.current = 0;
                 const timeoutId = setTimeout(() => {
@@ -437,7 +597,7 @@ export default function App() {
         const id = Date.now() + Math.random();
         const left = Math.random() * 80 + 10 + '%';
         const top = Math.random() * 60 + 20 + '%';
-        
+
         setEasterEggs(prev => [...prev, { id, emoji, left, top }]);
         setTimeout(() => {
             setEasterEggs(prev => prev.filter(item => item.id !== id));
@@ -472,11 +632,23 @@ export default function App() {
         setCurrentName(name);
         setCurrentMonth(month);
         setCurrentDay(day);
-        setIsGuestMode(false);
         const zodiacIndex = getZodiac(month, day);
         setCurrentZodiac(zodiacIndex);
         setFlipped(false);
         setRoute('card');
+
+        // Reset/Sync AI states based on cache
+        const cached = getCachedHoroscope(name, month, day, currentLang);
+        if (cached) {
+            setAiHoroscope(cached);
+            setAiLoading(false);
+            setAiError(null);
+        } else {
+            setAiHoroscope(null);
+            setAiLoading(false);
+            setAiError(null);
+        }
+        setShowDetails(false);
 
         // Autoplay music when creating a card
         userHasInteractedRef.current = true;
@@ -487,31 +659,31 @@ export default function App() {
         if (z) document.body.className = z.theme;
     };
 
-    const handleNewCard = () => {
-        window.history.pushState({}, '', '/create');
-        setRoute('create');
-        setInputName('');
-        setInputMonth('');
-        setInputDay('');
-    };
+
 
     const handleGoHome = () => {
         window.history.pushState({}, '', '/');
         setRoute('card');
-        
+
         // Reset to Guest mode / dynamic date
         const today = new Date();
         const todayMonth = today.getMonth() + 1;
         const todayDay = today.getDate();
-        
+
         const todayStr = `${String(todayMonth).padStart(2, '0')}-${String(todayDay).padStart(2, '0')}`;
         const birthdayPerson = birthdays.find(b => b.date === todayStr);
-        
+
+        let finalName = 'GUEST';
+        let finalMonth = todayMonth;
+        let finalDay = todayDay;
+
         if (birthdayPerson) {
+            finalName = birthdayPerson.name;
+            finalMonth = birthdayPerson.month;
+            finalDay = birthdayPerson.day;
             setCurrentName(birthdayPerson.name);
             setCurrentMonth(birthdayPerson.month);
             setCurrentDay(birthdayPerson.day);
-            setIsGuestMode(false);
             const z = getZodiac(birthdayPerson.month, birthdayPerson.day);
             setCurrentZodiac(z);
             document.body.className = zodiacData[z].theme;
@@ -519,12 +691,24 @@ export default function App() {
             setCurrentName('GUEST');
             setCurrentMonth(todayMonth);
             setCurrentDay(todayDay);
-            setIsGuestMode(true);
             const z = getZodiac(todayMonth, todayDay);
             setCurrentZodiac(z);
             document.body.className = zodiacData[z].theme;
         }
         setFlipped(false);
+
+        // Reset/Sync AI states based on cache
+        const cached = getCachedHoroscope(finalName, finalMonth, finalDay, currentLang);
+        if (cached) {
+            setAiHoroscope(cached);
+            setAiLoading(false);
+            setAiError(null);
+        } else {
+            setAiHoroscope(null);
+            setAiLoading(false);
+            setAiError(null);
+        }
+        setShowDetails(false);
     };
 
     const activeTranslations = translations[currentLang] || translations['ja'];
@@ -544,7 +728,7 @@ export default function App() {
     } : fortuneData;
 
     return (
-        <div className="min-h-screen flex flex-col relative overflow-hidden pb-10">
+        <div className="min-h-screen flex flex-col relative overflow-x-hidden pb-10">
             {/* Background Animations */}
             <canvas ref={canvasRef} className="particle-canvas" />
             <div className="mesh-bg">
@@ -566,13 +750,14 @@ export default function App() {
 
             {/* Top Bar Navigation */}
             <div className="fixed top-0 left-0 right-0 z-50 p-4 flex justify-between items-center">
-                <div className="flex items-center gap-2.5 cursor-pointer group" onClick={handleGoHome}>
-                    <img 
-                        src="/app-logo.png" 
-                        className="w-10 h-10 rounded-xl object-cover shadow-[0_0_15px_rgba(255,215,0,0.2)] border border-white/15 group-hover:scale-105 group-hover:rotate-3 group-hover:shadow-[0_0_20px_rgba(255,215,0,0.4)] transition-all duration-300" 
-                        alt="Logo Nihongo Tomodachi" 
+                <div className="flex items-center gap-2.5 cursor-pointer group"
+                >
+                    <img
+                        src="/app-logo.png"
+                        className="w-10 h-10 rounded-xl object-cover shadow-[0_0_15px_rgba(255,215,0,0.2)] border border-white/15 group-hover:scale-105 group-hover:rotate-3 group-hover:shadow-[0_0_20px_rgba(255,215,0,0.4)] transition-all duration-300"
+                        alt="Logo Nihongo Tomodachi"
                     />
-                    <span className="text-white font-black text-lg hidden sm:block tracking-wide group-hover:text-yellow-300 transition-colors duration-300">nihongo-tomodachi</span>
+                    <span className="text-white font-black text-lg hidden sm:block tracking-wide group-hover:text-yellow-300 transition-colors duration-300">Nihongo Tomodachi</span>
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -613,6 +798,22 @@ export default function App() {
                                         onClick={() => {
                                             setCurrentLang(lang);
                                             setIsLangOpen(false);
+
+                                            // Directly check cache or auto-translate on click to avoid synchronous state changes inside useEffect
+                                            const cached = getCachedHoroscope(currentName, currentMonth, currentDay, lang);
+                                            if (cached) {
+                                                setAiHoroscope(cached);
+                                                setAiLoading(false);
+                                                setAiError(null);
+                                            } else {
+                                                if (hasAnyCachedHoroscope(currentName, currentMonth, currentDay)) {
+                                                    triggerFetch(currentName, currentMonth, currentDay, currentZodiac, lang);
+                                                } else {
+                                                    setAiHoroscope(null);
+                                                    setAiLoading(false);
+                                                    setAiError(null);
+                                                }
+                                            }
                                         }}
                                         className={`flex items-center gap-3 px-3 py-2 rounded-xl text-left text-sm font-semibold hover:bg-white/10 transition-all text-white w-full ${currentLang === lang ? 'bg-white/20' : ''}`}
                                     >
@@ -670,7 +871,7 @@ export default function App() {
                                     <div className="w-48 h-48 mb-4 floating" dangerouslySetInnerHTML={{ __html: activeZodiac.svg }} />
                                     <div className="tag mb-3">{activeTranslations.yourZodiac}</div>
                                     <h2 className="text-3xl font-black text-white mb-1">{activeZodiac.name[currentLang]}</h2>
-                                    
+
                                     {/* EXPLICIT ZODIAC SYMBOL NAME */}
                                     <div className="flex flex-col items-center justify-center bg-yellow-500/10 px-4 py-2.5 rounded-xl border border-yellow-500/20 mb-3 w-full max-w-[280px] text-center">
                                         <span className="text-yellow-400 text-xs font-bold tracking-wider mb-1">✨ {activeTranslations.zodiacSymbol}</span>
@@ -739,54 +940,141 @@ export default function App() {
                             </div>
                         </div>
 
-                        {/* ===== GEMINI AI HOROSCOPE CARD ===== */}
-                        <div className="glass-card-strong p-6 md:p-8 mb-6 border border-yellow-500/30 shadow-[0_0_30px_rgba(255,215,0,0.15)]">
+                        {/* ===== AI HOROSCOPE CARD ===== */}
+                        <div className="glass-card-strong p-6 md:p-8 mb-6 border border-yellow-500/30 shadow-[0_0_30px_rgba(255,215,0,0.15)] relative">
+                            {/* Decorative lighting background effect */}
+                            <div className="absolute -top-10 -right-10 w-32 h-32 bg-yellow-500/10 rounded-full blur-2xl pointer-events-none" />
+                            <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl pointer-events-none" />
+
                             {aiLoading ? (
-                                <div className="flex flex-col items-center justify-center py-10 gap-3 text-center">
-                                    <span className="text-4xl animate-spin">🔮</span>
-                                    <p className="text-yellow-400 font-bold text-lg animate-pulse">{activeTranslations.loadingAi}</p>
+                                <div className="flex flex-col items-center justify-center py-10 gap-4 text-center">
+                                    <div className="relative flex items-center justify-center">
+                                        <span className="text-5xl animate-spin inline-block filter drop-shadow-[0_0_15px_rgba(234,179,8,0.5)]">🔮</span>
+                                        <span className="absolute text-xl animate-ping opacity-75">✨</span>
+                                    </div>
+                                    <p className="text-yellow-400 font-bold text-lg animate-pulse tracking-wide font-sans">{activeTranslations.loadingAi}</p>
+                                </div>
+                            ) : aiError ? (
+                                <div className="text-center py-6 px-4 space-y-4 flex flex-col items-center justify-center fade-in">
+                                    <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center text-3xl border border-red-500/20 shadow-lg pulse-glow">
+                                        ⚠️
+                                    </div>
+                                    <div className="space-y-2 max-w-[320px]">
+                                        <h4 className="text-red-400 font-extrabold text-lg tracking-wide">
+                                            {activeTranslations.aiHoroscopeTitle.replace(/✨/g, '').trim()}
+                                        </h4>
+                                        <p className="text-white/80 text-sm leading-relaxed">
+                                            {aiError}
+                                        </p>
+                                    </div>
+                                    <button
+                                        onClick={handleTellFortune}
+                                        className="btn-modern btn-gold px-7 py-3.5 rounded-full text-base font-extrabold flex items-center gap-2 shadow-[0_0_20px_rgba(255,215,0,0.25)] border border-yellow-400/30 active:scale-95 group transition-all mt-2 hover:scale-[1.03] hover:shadow-[0_0_25px_rgba(255,215,0,0.4)] cursor-pointer"
+                                    >
+                                        <span>🔄</span>
+                                        <span>{currentLang === 'id' ? 'Coba Lagi' : currentLang === 'ja' ? 'もう一度試す' : 'Try Again'}</span>
+                                    </button>
                                 </div>
                             ) : aiHoroscope ? (
-                                <div className="space-y-5">
+                                <div className="space-y-5 fade-in">
                                     <h3 className="text-center font-black text-xl md:text-2xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-400 to-orange-500 animate-shimmer py-1">
                                         {activeTranslations.aiHoroscopeTitle}
                                     </h3>
-                                    
-                                    <div className="bg-slate-900/50 p-4 rounded-2xl border border-white/5">
-                                        <p className="text-sm font-semibold text-white/60 mb-1">💌 Message</p>
-                                        <p className="text-white font-medium italic">"{aiHoroscope.birthdayWish}"</p>
+
+                                    <div className="bg-slate-950/40 p-4 rounded-2xl border border-white/5 shadow-inner text-center">
+                                        <p className="text-xs font-bold text-yellow-400/80 uppercase tracking-widest mb-1.5 flex items-center justify-center gap-1.5">
+                                            <span>💌</span> {activeTranslations.happyBirthday} Message
+                                        </p>
+                                        <p className="text-white font-medium italic text-base leading-relaxed">
+                                            "{aiHoroscope.birthdayWish}"
+                                        </p>
                                     </div>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="bg-slate-900/50 p-4 rounded-2xl border border-white/5">
-                                            <p className="text-sm font-semibold text-yellow-400 mb-1 flex items-center gap-1">🌟 {activeTranslations.aiPrediction}</p>
-                                            <p className="text-white/80 text-sm leading-relaxed">{aiHoroscope.yearlyPrediction}</p>
-                                        </div>
-                                        <div className="bg-slate-900/50 p-4 rounded-2xl border border-white/5">
-                                            <p className="text-sm font-semibold text-emerald-400 mb-1 flex items-center gap-1">🎁 {activeTranslations.aiGoodNews}</p>
-                                            <p className="text-white/80 text-sm leading-relaxed">{aiHoroscope.goodNews}</p>
-                                        </div>
+                                    {/* Click for detail button */}
+                                    <div className="text-center">
+                                        <button
+                                            onClick={() => setShowDetails(!showDetails)}
+                                            className="btn-modern mx-auto px-5 py-2.5 rounded-full flex items-center gap-2 border border-yellow-500/25 bg-yellow-500/5 hover:bg-yellow-500/10 text-yellow-300 text-sm font-bold transition-all shadow-[0_0_15px_rgba(253,224,71,0.05)] active:scale-95 cursor-pointer animate-pulse"
+                                        >
+                                            <span>{showDetails ? "✨" : "🔮"}</span>
+                                            <span>{showDetails ? activeTranslations.closeDetails : activeTranslations.clickForDetails}</span>
+                                            <svg
+                                                className={`w-4 h-4 transition-transform duration-300 ${showDetails ? 'rotate-180' : ''}`}
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </button>
                                     </div>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="bg-slate-900/50 p-4 rounded-2xl border border-white/5">
-                                            <p className="text-sm font-semibold text-red-400 mb-1 flex items-center gap-1">🛠️ {activeTranslations.aiSolution}</p>
-                                            <p className="text-white/80 text-sm leading-relaxed">{aiHoroscope.solution}</p>
+                                    {/* Expandable details with smooth transition */}
+                                    <div 
+                                         className={`transition-all duration-700 ease-in-out overflow-hidden space-y-4 pb-4 ${showDetails ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                                         style={{ maxHeight: showDetails ? '3000px' : '0px' }}
+                                    >
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                                            <div className="bg-slate-950/30 p-4 rounded-2xl border border-white/5 hover:border-yellow-500/10 transition-colors shadow-sm">
+                                                <p className="text-sm font-bold text-yellow-400 mb-1.5 flex items-center gap-1.5">
+                                                    <span>🌟</span> {activeTranslations.aiPrediction}
+                                                </p>
+                                                <p className="text-white/80 text-sm leading-relaxed text-left">{aiHoroscope.yearlyPrediction}</p>
+                                            </div>
+                                            <div className="bg-slate-950/30 p-4 rounded-2xl border border-white/5 hover:border-emerald-500/10 transition-colors shadow-sm">
+                                                <p className="text-sm font-bold text-emerald-400 mb-1.5 flex items-center gap-1.5">
+                                                    <span>🎁</span> {activeTranslations.aiGoodNews}
+                                                </p>
+                                                <p className="text-white/80 text-sm leading-relaxed text-left">{aiHoroscope.goodNews}</p>
+                                            </div>
                                         </div>
-                                        <div className="bg-slate-900/50 p-4 rounded-2xl border border-white/5">
-                                            <p className="text-sm font-semibold text-cyan-400 mb-1 flex items-center gap-1">🧭 {activeTranslations.aiAdvice}</p>
-                                            <p className="text-white/80 text-sm leading-relaxed">{aiHoroscope.futureAdvice}</p>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="bg-slate-950/30 p-4 rounded-2xl border border-white/5 hover:border-red-500/10 transition-colors shadow-sm">
+                                                <p className="text-sm font-bold text-red-400 mb-1.5 flex items-center gap-1.5">
+                                                    <span>🛠️</span> {activeTranslations.aiSolution}
+                                                </p>
+                                                <p className="text-white/80 text-sm leading-relaxed text-left">{aiHoroscope.solution}</p>
+                                            </div>
+                                            <div className="bg-slate-950/30 p-4 rounded-2xl border border-white/5 hover:border-cyan-500/10 transition-colors shadow-sm">
+                                                <p className="text-sm font-bold text-cyan-400 mb-1.5 flex items-center gap-1.5">
+                                                    <span>🧭</span> {activeTranslations.aiAdvice}
+                                                </p>
+                                                <p className="text-white/80 text-sm leading-relaxed text-left">{aiHoroscope.futureAdvice}</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            ) : null}
+                            ) : (
+                                <div className="text-center py-6 px-4 space-y-4 flex flex-col items-center justify-center fade-in">
+                                    <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-yellow-500/20 to-purple-500/20 flex items-center justify-center text-3xl border border-yellow-500/20 shadow-lg floating">
+                                        🔮
+                                    </div>
+                                    <div className="space-y-1 max-w-[280px]">
+                                        <h4 className="text-white font-extrabold text-lg tracking-wide">
+                                            {activeTranslations.aiHoroscopeTitle.replace(/✨/g, '').trim()}
+                                        </h4>
+                                        <p className="text-white/60 text-xs leading-normal">
+                                            {activeTranslations.tellFortuneDesc}
+                                        </p>
+                                    </div>
+                                    <button
+                                        onClick={handleTellFortune}
+                                        className="btn-modern btn-gold px-7 py-3.5 rounded-full text-base font-extrabold flex items-center gap-2 shadow-[0_0_20px_rgba(255,215,0,0.25)] border border-yellow-400/30 active:scale-95 group transition-all mt-2 hover:scale-[1.03] hover:shadow-[0_0_25px_rgba(255,215,0,0.4)] cursor-pointer"
+                                    >
+                                        <span>🔮</span>
+                                        <span>{activeTranslations.tellFortuneBtn}</span>
+                                        <span className="inline-block transform transition-transform group-hover:translate-x-1 duration-200">✨</span>
+                                    </button>
+                                </div>
+                            )}
                         </div>
 
                         {/* Navigation Actions removed per request */}
 
                         {/* Bottom Brand */}
                         <div className="text-center text-white/40 text-sm mb-4">
-                            <p>nihongo-tomodachi | NICC の皆より 💖</p>
+                            <p>Nihongo Tomodachi | NICC の皆より 💖</p>
                         </div>
                     </div>
                 )}
@@ -799,7 +1087,7 @@ export default function App() {
                                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-3xl mx-auto mb-4 pulse-glow">
                                     ✨
                                 </div>
-                                <h1 className="text-3xl font-black text-white mb-2">nihongo-tomodachi</h1>
+                                <h1 className="text-3xl font-black text-white mb-2">Nihongo Tomodachi</h1>
                                 <p className="text-white/60 text-sm">{activeTranslations.createSubtitle}</p>
                             </div>
 
