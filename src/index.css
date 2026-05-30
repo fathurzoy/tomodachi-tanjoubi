@@ -17,6 +17,12 @@
     box-sizing: border-box;
 }
 
+html {
+    background-color: var(--z-bg-from, #0f0f23);
+    scroll-behavior: smooth;
+    overscroll-behavior: none;
+}
+
 body {
     font-family: 'Noto Sans JP', sans-serif;
     overflow-x: hidden;
@@ -24,6 +30,7 @@ body {
     background: linear-gradient(135deg, var(--z-bg-from) 0%, var(--z-bg-to) 100%);
     transition: background 1s ease;
     color: white;
+    overscroll-behavior: none;
 }
 
 /* Modern Animations */
