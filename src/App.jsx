@@ -892,10 +892,11 @@ export default function App() {
                         </div>
 
                         {/* Interactive 3D flip card */}
-                        <div className={`flip-card mb-6 scroll-reveal ${flipped ? 'flipped' : ''}`} onClick={() => setFlipped(!flipped)}>
-                            <div className="flip-card-inner min-h-[560px]">
-                                {/* Front Side */}
-                                <div className="flip-card-front glass-card-strong p-6 md:p-8 flex flex-col items-center justify-center">
+                        <div className="scroll-reveal mb-6">
+                            <div className={`flip-card w-full ${flipped ? 'flipped' : ''}`} onClick={() => setFlipped(!flipped)}>
+                                <div className="flip-card-inner min-h-[560px]">
+                                    {/* Front Side */}
+                                    <div className="flip-card-front glass-card-strong p-6 md:p-8 flex flex-col items-center justify-center">
                                     <div className="w-48 h-48 mb-4 floating" dangerouslySetInnerHTML={{ __html: activeZodiac.svg }} />
                                     <div className="tag mb-3">{activeTranslations.yourZodiac}</div>
                                     <h2 className="text-3xl font-black text-white mb-1">{activeZodiac.name[currentLang]}</h2>
@@ -926,6 +927,7 @@ export default function App() {
                                 </div>
                             </div>
                         </div>
+                    </div>
 
                         {/* NICC Friends Wish */}
                         <div className="glass-card p-6 md:p-8 mb-6 text-center scroll-reveal">
