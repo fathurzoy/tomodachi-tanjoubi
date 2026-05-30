@@ -251,6 +251,7 @@ export default function App() {
     const [currentMonth, setCurrentMonth] = useState(1);
     const [currentDay, setCurrentDay] = useState(1);
     const [currentZodiac, setCurrentZodiac] = useState(0);
+    const [hasOpened, setHasOpened] = useState(false);
 
     // Interactive States
     const [flipped, setFlipped] = useState(false);
@@ -581,13 +582,9 @@ export default function App() {
 
     // Autoplay & Visibility Logic
     useEffect(() => {
-        // Attempt to autoplay immediately (may be blocked by browser)
-        startMusic();
-
         const handleFirstInteraction = () => {
             if (!userHasInteractedRef.current) {
                 userHasInteractedRef.current = true;
-                startMusic();
             }
             window.removeEventListener('click', handleFirstInteraction);
             window.removeEventListener('keydown', handleFirstInteraction);
@@ -680,6 +677,7 @@ export default function App() {
 
         // Autoplay music when creating a card
         userHasInteractedRef.current = true;
+        setHasOpened(true);
         startMusic();
 
         // Apply new background theme
@@ -724,6 +722,7 @@ export default function App() {
             document.body.className = zodiacData[z].theme;
         }
         setFlipped(false);
+        setHasOpened(false);
 
         // Reset/Sync AI states based on cache
         const cached = getCachedHoroscope(finalName, finalMonth, finalDay, currentLang);
@@ -869,9 +868,35 @@ export default function App() {
             {/* MAIN APP CONTAINER */}
             <div className="flex-1 flex flex-col items-center justify-center p-4 pt-24 relative z-20">
 
+                {/* ===== OPEN CARD OVERLAY ===== */}
+                {route === 'card' && !hasOpened && (
+                    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-950/80 backdrop-blur-md">
+                        <div className="relative group cursor-pointer" onClick={() => {
+                            setHasOpened(true);
+                            userHasInteractedRef.current = true;
+                            startMusic();
+                            spawnEmoji('🎉');
+                        }}>
+                            {/* Glowing background */}
+                            <div className="absolute -inset-4 bg-gradient-to-r from-yellow-500 via-pink-500 to-purple-500 rounded-full opacity-40 group-hover:opacity-75 blur-xl transition-all duration-500 animate-pulse"></div>
+                            
+                            {/* Envelope / Button body */}
+                            <div className="relative glass-card-strong px-10 py-8 flex flex-col items-center gap-4 rounded-3xl border border-yellow-400/30 transform group-hover:scale-105 transition-all duration-500 shadow-[0_0_40px_rgba(255,215,0,0.2)]">
+                                <div className="text-6xl animate-bounce">💌</div>
+                                <h2 className="text-2xl md:text-3xl font-black text-white whitespace-nowrap shimmer-text">
+                                    {currentLang === 'id' ? 'Buka Kartu Ucapan' : currentLang === 'ja' ? 'カードを開く' : 'Open Card'}
+                                </h2>
+                                <p className="text-white/60 text-sm font-semibold tracking-widest uppercase mt-1">
+                                    {currentLang === 'id' ? 'Ketuk Untuk Membuka' : currentLang === 'ja' ? 'タップして開く' : 'Tap to Open'}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* ===== CARD SECTION ===== */}
                 {route === 'card' && (
-                    <div className="w-full max-w-lg fade-up">
+                    <div className={`w-full max-w-lg transition-all duration-1000 ease-out transform ${hasOpened ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12 pointer-events-none'}`}>
                         {/* Header Details */}
                         <div className="text-center mb-8">
                             <div className="inline-block mb-4 relative">
