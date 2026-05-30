@@ -15,18 +15,26 @@ async function fetchGeminiHoroscope(name, month, day, zodiacName, language) {
     };
 
     const targetLang = languageNames[language] || "Japanese";
+    const currentYear = new Date().getFullYear();
 
-    const prompt = `You are a warm Japanese astrologer and birthday card reader for NICC. Create a highly personalized and friendly birthday/zodiac reading for:
+    const prompt = `You are a warm Japanese astrologer and birthday card reader for NICC (Nihon Indonesian Collaboration Community). Create a highly personalized and friendly birthday/zodiac reading for:
     - Name: ${name}
     - Birth Date: Day ${day} of Month ${month} (Zodiac Sign: ${zodiacName})
+    - Current Year: ${currentYear}
     
     You MUST output valid, pure JSON in ${targetLang} language. Do NOT add any markdown wrapping like \`\`\`json or backticks, just output raw JSON text containing exactly these keys:
-    1. birthdayWish: A creative and warm birthday congratulatory message in Japanese NICC friend style.
-    2. characterReading: A deep, accurate, and positive reading of their core personality traits.
-    3. yearlyPrediction: An exciting layout of how this year will go (study/career, lifestyle, connections).
-    4. solution: Challenges they might face this year and the wise solutions to overcome them.
-    5. goodNews: Specific good news or positive fortune waiting for them this year.
-    6. futureAdvice: A motivational, wise advice for their future steps.
+    1. birthdayWish: A creative and warm birthday congratulatory message written ON BEHALF of the NICC community in ${targetLang} language, wishing them success, joy, and improvement in Japanese.
+    2. characterReading: A deep, positive reading of their core personality traits.
+    3. zodiacMessage: An inspiring one-line tagline/motto for their zodiac sign for the year ${currentYear} (max 15 words).
+    4. yearlyPrediction: An exciting layout of how this year ${currentYear} will go (study/career, lifestyle, connections).
+    5. solution: Challenges they might face this year and the wise solutions to overcome them.
+    6. goodNews: Specific good news or positive fortune waiting for them this year.
+    7. futureAdvice: A motivational, wise advice for their future steps.
+    8. luckScores: An object containing integer scores from 1 to 5 representing:
+       - love: integer between 1 and 5
+       - money: integer between 1 and 5
+       - study: integer between 1 and 5
+       - health: integer between 1 and 5
     
     Keep the tone extremely positive, inspiring, and encouraging! Output JSON only.`;
 
@@ -189,13 +197,21 @@ export default function App() {
                 if (active) {
                     const z = zodiacData[currentZodiac];
                     const t = translations[currentLang];
+                    const seed = currentZodiac + currentName.length;
                     setAiHoroscope({
                         birthdayWish: t.birthdayMsg(currentName),
                         characterReading: z.character[currentLang],
+                        zodiacMessage: z.msg[currentLang],
                         yearlyPrediction: z.msg[currentLang],
                         solution: currentLang === 'id' ? "Tetap fokus dan selesaikan tantangan satu per satu." : "Stay focused and resolve challenges step by step.",
                         goodNews: currentLang === 'id' ? "Peluang luar biasa dan kesuksesan baru menanti Anda!" : "Amazing opportunities and new milestones await you!",
-                        futureAdvice: currentLang === 'id' ? "Perbanyak koneksi baru dan terus perluas kemampuan bahasa Jepang Anda!" : "Expand your networks and continue building your Japanese fluency!"
+                        futureAdvice: currentLang === 'id' ? "Perbanyak koneksi baru dan terus perluas kemampuan bahasa Jepang Anda!" : "Expand your networks and continue building your Japanese fluency!",
+                        luckScores: {
+                            love: (Math.abs(seed * 7) % 5) + 1,
+                            money: (Math.abs(seed * 3) % 5) + 1,
+                            study: (Math.abs(seed * 11) % 5) + 1,
+                            health: (Math.abs(seed * 5) % 5) + 1
+                        }
                     });
                 }
             } finally {
@@ -515,6 +531,18 @@ export default function App() {
     const activeZodiac = zodiacData[currentZodiac] || zodiacData[0];
     const fortuneData = getFortune(currentZodiac + currentName.length);
 
+    const getStarRating = (score) => {
+        const rating = Math.min(5, Math.max(1, typeof score === 'string' ? parseInt(score) : score || 3));
+        return "★".repeat(rating) + "☆".repeat(5 - rating);
+    };
+
+    const displayFortune = (aiHoroscope && aiHoroscope.luckScores) ? {
+        love: getStarRating(aiHoroscope.luckScores.love),
+        money: getStarRating(aiHoroscope.luckScores.money),
+        study: getStarRating(aiHoroscope.luckScores.study),
+        health: getStarRating(aiHoroscope.luckScores.health)
+    } : fortuneData;
+
     return (
         <div className="min-h-screen flex flex-col relative overflow-hidden pb-10">
             {/* Background Animations */}
@@ -658,9 +686,13 @@ export default function App() {
                                 <div className="flip-card-back p-6 md:p-8 flex flex-col items-center justify-center text-center">
                                     <div className="text-4xl mb-4">✨🔮✨</div>
                                     <h3 className="text-xl font-bold text-white mb-3">{activeTranslations.character}</h3>
-                                    <p className="text-white/80 text-sm leading-relaxed mb-4">{activeZodiac.character[currentLang]}</p>
+                                    <p className="text-white/80 text-sm leading-relaxed mb-4">
+                                        {aiHoroscope ? aiHoroscope.characterReading : activeZodiac.character[currentLang]}
+                                    </p>
                                     <div className="divider"></div>
-                                    <p className="text-white text-base leading-relaxed font-semibold">{activeZodiac.msg[currentLang]}</p>
+                                    <p className="text-white text-base leading-relaxed font-semibold text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-amber-300 to-orange-400 font-black animate-shimmer py-0.5">
+                                        {aiHoroscope ? aiHoroscope.zodiacMessage : activeZodiac.msg[currentLang]}
+                                    </p>
                                     <div className="mt-4 text-white/40 text-sm">👆 {activeTranslations.tapToFlipBack}</div>
                                 </div>
                             </div>
@@ -676,7 +708,7 @@ export default function App() {
                                 <span className="clickable-emoji text-3xl" onClick={() => spawnEmoji('✨')}>✨</span>
                             </div>
                             <p className="text-white text-lg leading-relaxed font-medium whitespace-pre-line">
-                                {activeTranslations.birthdayMsg(currentName)}
+                                {aiHoroscope ? aiHoroscope.birthdayWish : activeTranslations.birthdayMsg(currentName)}
                             </p>
                         </div>
 
@@ -687,22 +719,22 @@ export default function App() {
                                 <div className="bg-white/5 rounded-2xl p-4 text-center cursor-pointer hover:bg-white/10 transition-all border border-white/5" onClick={() => spawnEmoji('💖')}>
                                     <div className="text-2xl mb-1">💘</div>
                                     <div className="text-xs font-bold text-white/70 mb-1">{activeTranslations.love}</div>
-                                    <div className="text-xl font-black fortune-star text-pink-400">{fortuneData.love}</div>
+                                    <div className="text-xl font-black fortune-star text-pink-400">{displayFortune.love}</div>
                                 </div>
                                 <div className="bg-white/5 rounded-2xl p-4 text-center cursor-pointer hover:bg-white/10 transition-all border border-white/5" onClick={() => spawnEmoji('💵')}>
                                     <div className="text-2xl mb-1">💰</div>
                                     <div className="text-xs font-bold text-white/70 mb-1">{activeTranslations.money}</div>
-                                    <div className="text-xl font-black fortune-star text-yellow-400">{fortuneData.money}</div>
+                                    <div className="text-xl font-black fortune-star text-yellow-400">{displayFortune.money}</div>
                                 </div>
                                 <div className="bg-white/5 rounded-2xl p-4 text-center cursor-pointer hover:bg-white/10 transition-all border border-white/5" onClick={() => spawnEmoji('📚')}>
                                     <div className="text-2xl mb-1">📚</div>
                                     <div className="text-xs font-bold text-white/70 mb-1">{activeTranslations.study}</div>
-                                    <div className="text-xl font-black fortune-star text-teal-400">{fortuneData.study}</div>
+                                    <div className="text-xl font-black fortune-star text-teal-400">{displayFortune.study}</div>
                                 </div>
                                 <div className="bg-white/5 rounded-2xl p-4 text-center cursor-pointer hover:bg-white/10 transition-all border border-white/5" onClick={() => spawnEmoji('🍀')}>
                                     <div className="text-2xl mb-1">🏃</div>
                                     <div className="text-xs font-bold text-white/70 mb-1">{activeTranslations.health}</div>
-                                    <div className="text-xl font-black fortune-star text-green-400">{fortuneData.health}</div>
+                                    <div className="text-xl font-black fortune-star text-green-400">{displayFortune.health}</div>
                                 </div>
                             </div>
                         </div>
