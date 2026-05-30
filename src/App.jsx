@@ -280,6 +280,7 @@ export default function App() {
     const [inputName, setInputName] = useState('');
     const [inputMonth, setInputMonth] = useState('');
     const [inputDay, setInputDay] = useState('');
+    const [formError, setFormError] = useState('');
 
     // Core function to fetch AI horoscope with key rotation and error handling
     const triggerFetch = async (name, month, day, zodiacIdx, lang) => {
@@ -643,11 +644,87 @@ export default function App() {
         }
     };
 
+    // Dynamic input validation & capping for Month
+    const handleMonthChange = (val) => {
+        if (val === '') {
+            setInputMonth('');
+            setFormError('');
+            return;
+        }
+        const cleanVal = val.replace(/\D/g, '');
+        if (cleanVal.length > 2) return;
+        
+        let num = parseInt(cleanVal, 10);
+        if (num > 12) {
+            num = 12;
+        }
+        
+        setInputMonth(String(num));
+        setFormError('');
+        
+        // Auto-clamp day if it exceeds the new month's max days
+        if (inputDay !== '') {
+            const dayNum = parseInt(inputDay, 10);
+            const maxDays = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+            const maxLimit = maxDays[num - 1];
+            if (dayNum > maxLimit) {
+                setInputDay(String(maxLimit));
+            }
+        }
+    };
+
+    // Dynamic input validation & capping for Day
+    const handleDayChange = (val) => {
+        if (val === '') {
+            setInputDay('');
+            setFormError('');
+            return;
+        }
+        const cleanVal = val.replace(/\D/g, '');
+        if (cleanVal.length > 2) return;
+        
+        const num = parseInt(cleanVal, 10);
+        
+        const monthVal = parseInt(inputMonth) || 0;
+        const maxDays = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        const maxLimit = monthVal >= 1 && monthVal <= 12 ? maxDays[monthVal - 1] : 31;
+        
+        if (num > maxLimit) {
+            setInputDay(String(maxLimit));
+        } else {
+            setInputDay(cleanVal);
+        }
+        setFormError('');
+    };
+
     // Card Generation
     const handleGenerateCard = () => {
         const name = inputName.trim() || 'Friend';
-        const month = parseInt(inputMonth) || 1;
-        const day = parseInt(inputDay) || 1;
+        const monthVal = parseInt(inputMonth);
+        const dayVal = parseInt(inputDay);
+
+        // Validation for month
+        if (isNaN(monthVal) || monthVal < 1 || monthVal > 12) {
+            setFormError(activeTranslations.invalidMonth || 'Bulan harus antara 1 sampai 12.');
+            return;
+        }
+
+        const maxDays = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        const maxDayForMonth = maxDays[monthVal - 1];
+
+        // Validation for day
+        if (isNaN(dayVal) || dayVal < 1 || dayVal > maxDayForMonth) {
+            const errorMsg = typeof activeTranslations.invalidDay === 'function'
+                ? activeTranslations.invalidDay(monthVal, maxDayForMonth)
+                : `${activeTranslations.invalidDay || 'Tanggal tidak valid untuk bulan ini.'} (${maxDayForMonth})`;
+            setFormError(errorMsg);
+            return;
+        }
+
+        setFormError('');
+
+        const month = monthVal;
+        const day = dayVal;
 
         // Push routing path to History API
         const newUrl = `${window.location.origin}/?name=${encodeURIComponent(name)}&month=${month}&day=${day}`;
@@ -690,6 +767,7 @@ export default function App() {
     const handleGoHome = () => {
         window.history.pushState({}, '', '/');
         setRoute('card');
+        setFormError('');
 
         // Reset to Guest mode / dynamic date
         const today = new Date();
@@ -1147,12 +1225,21 @@ export default function App() {
                             </div>
 
                             <div className="space-y-5">
+                                {formError && (
+                                    <div className="bg-red-500/10 border border-red-500/20 text-red-300 text-sm font-semibold rounded-2xl p-4 flex items-center gap-3 fade-in">
+                                        <span className="text-lg">⚠️</span>
+                                        <span className="text-left">{formError}</span>
+                                    </div>
+                                )}
                                 <div>
                                     <label className="text-white/70 text-sm font-bold mb-2 block">{activeTranslations.nameLabel}</label>
                                     <input
                                         type="text"
                                         value={inputName}
-                                        onChange={(e) => setInputName(e.target.value)}
+                                        onChange={(e) => {
+                                            setInputName(e.target.value);
+                                            setFormError('');
+                                        }}
                                         className="input-modern"
                                         placeholder="Name"
                                     />
@@ -1163,7 +1250,7 @@ export default function App() {
                                         <input
                                             type="number"
                                             value={inputMonth}
-                                            onChange={(e) => setInputMonth(e.target.value)}
+                                            onChange={(e) => handleMonthChange(e.target.value)}
                                             min="1"
                                             max="12"
                                             className="input-modern"
@@ -1175,7 +1262,7 @@ export default function App() {
                                         <input
                                             type="number"
                                             value={inputDay}
-                                            onChange={(e) => setInputDay(e.target.value)}
+                                            onChange={(e) => handleDayChange(e.target.value)}
                                             min="1"
                                             max="31"
                                             className="input-modern"

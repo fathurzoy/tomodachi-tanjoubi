@@ -150,8 +150,10 @@ export const translations = {
         tellFortuneBtn: 'AIで運勢を占う 🔮',
         tellFortuneDesc: 'AIが今年の恋愛運、金運、仕事・学業運、健康運を占います。',
         clickForDetails: '詳細を表示',
-        closeDetails: '詳細を閉じる',
-        aiError: '⚠️ AIシステムで一時的なエラーが発生しているか、トークン制限に達しました。しばらく時間をおいて再度お試しください。'
+        closeDetails: '詳細を表示しない',
+        aiError: '⚠️ AIシステムで一時的なエラーが発生しているか、トークン制限に達しました。しばらく時間をおいて再度お試しください。',
+        invalidMonth: '月は1から12の間で入力してください。',
+        invalidDay: (m, max) => `${m}月の日は1から${max}の間で入力してください。`
     },
     id: {
         happyBirthday: 'Selamat Ulang Tahun',
@@ -185,7 +187,9 @@ export const translations = {
         tellFortuneDesc: 'AI akan meramal asmara, keuangan, belajar, dan kesehatanmu tahun ini.',
         clickForDetails: 'Klik untuk detail',
         closeDetails: 'Tutup detail',
-        aiError: '⚠️ AI sedang bermasalah atau kehabisan token. Silakan coba beberapa saat lagi.'
+        aiError: '⚠️ AI sedang bermasalah atau kehabisan token. Silakan coba beberapa saat lagi.',
+        invalidMonth: 'Bulan harus antara 1 sampai 12.',
+        invalidDay: (m, max) => `Tanggal harus antara 1 sampai ${max} untuk bulan ${m}.`
     },
     en: {
         happyBirthday: 'Happy Birthday',
@@ -219,7 +223,9 @@ export const translations = {
         tellFortuneDesc: 'AI will read your love, money, study, and health for this year.',
         clickForDetails: 'Click for details',
         closeDetails: 'Close details',
-        aiError: '⚠️ The AI is temporarily unavailable or has run out of tokens. Please try again in a few moments.'
+        aiError: '⚠️ The AI is temporarily unavailable or has run out of tokens. Please try again in a few moments.',
+        invalidMonth: 'Month must be between 1 and 12.',
+        invalidDay: (m, max) => `Day must be between 1 and ${max} for month ${m}.`
     },
     zh: {
         happyBirthday: '生日快乐',
@@ -253,7 +259,9 @@ export const translations = {
         tellFortuneDesc: 'AI 将为您详细占卜今年的爱情、财运、学业和健康。',
         clickForDetails: '点击查看详情',
         closeDetails: '收起详情',
-        aiError: '⚠️ AI 系统暂时不可用或已超出额度。请稍后再试。'
+        aiError: '⚠️ AI 系统暂时不可用或已超出额度。请稍后再试。',
+        invalidMonth: '月份必须在1到12之间。',
+        invalidDay: (m, max) => `${m}月的日期必须在1到${max}之间。`
     },
     my: {
         happyBirthday: 'မွေးနေ့မှီး',
@@ -287,7 +295,9 @@ export const translations = {
         tellFortuneDesc: 'AI သည် ယခုနှစ်အတွက် သင်၏အချစ်၊ ငွေကြေး၊ ပညာနှင့် ကျန်းမာရေးတို့ကို ဟောပြောပေးပါမည်။',
         clickForDetails: 'အသေးစိတ်ကြည့်ရန် နှိပ်ပါ',
         closeDetails: 'အသေးစိတ်ပိတ်ပါ',
-        aiError: '⚠️ AI မှာ တစ်ခုခုမှားယွင်းနေသဖြင့် ခေတ္တစောင့်ပြီးမှ ထပ်မံကြိုးစားပါ။'
+        aiError: '⚠️ AI မှာ တစ်ခု乎းယွင်းနေသဖြင့် ခေတ္တစောင့်ပြီးမှ ထပ်မံကြိုးစားပါ။',
+        invalidMonth: 'လသည် ၁ မှ ၁၂ အတွင်း ဖြစ်ရပါမည်။',
+        invalidDay: (m, max) => `လ ${m} အတွက် ရက်သည် ၁ မှ ${max} အတွင်း ဖြစ်ရပါမည်။`
     },
     ne: {
         happyBirthday: 'जन्मदिनको शुभकामना',
@@ -321,7 +331,9 @@ export const translations = {
         tellFortuneDesc: 'AI ले यस वर्षको तपाईंको प्रेम, पैसा, पढाइ र स्वास्थ्यको विश्लेषण गर्नेछ।',
         clickForDetails: 'विवरणको लागि क्लिक गर्नुहोस्',
         closeDetails: 'विवरण बन्द गर्नुहोस्',
-        aiError: '⚠️ AI प्रणाली हाल उपलब्ध छैन वा टोकन समाप्त भएको छ। कृपया केही समय पछि प्रयास गर्नुहोस्।'
+        aiError: '⚠️ AI प्रणाली हाल उपलब्ध छैन वा टोकन समाप्त भएको छ। कृपया केही समय पछि प्रयास गर्नुहोस्।',
+        invalidMonth: 'महिना १ देखि १२ को बीचमा हुनुपर्छ।',
+        invalidDay: (m, max) => `महिना ${m} को लागि दिन १ देखि ${max} को बीचमा हुनुपर्छ।`
     },
     si: {
         happyBirthday: 'උපන්දින සුභ පැතුම්',
@@ -352,10 +364,12 @@ export const translations = {
         guestNotice: '* අමුත්තන්ගේ ප්‍රකාරය (අද දවසේ ලග්නය පෙන්වයි)',
         todayDate: 'අද',
         tellFortuneBtn: 'AI සමඟ වාසනාව බලන්න 🔮',
-        tellFortuneDesc: 'AI මෙම වසරේ ඔබගේ ආදරය, මුදල්, අධ්‍යාပනය සහ සෞඛ්‍යය විශ්ලේෂණය කරනු ඇත.',
+        tellFortuneDesc: 'AI මෙම වසරේ ඔබගේ ආදරය, මුදල්, අධ්‍යාපනය සහ සෞඛ්‍යය විශ්ලේෂණය කරනු ඇත.',
         clickForDetails: 'විස්තර සඳහා ක්ලික් කරන්න',
         closeDetails: 'විස්තර වසන්න',
-        aiError: '⚠️ AI පද්ධතිය තාවකාලිකව අක්‍රියයි හෝ සීමාව ඉක්මවා ඇත. කරුණාකර පසුව නැවත උත්සාහ කරන්න.'
+        aiError: '⚠️ AI පද්ධතිය තාවකාලිකව අක්‍රියයි හෝ සීමාව ඉක්මවා ඇත. කරුණාකර පසුව නැවත උත්සාහ කරන්න.',
+        invalidMonth: 'මාසය 1 ත් 12 ත් අතර විය යුතුය.',
+        invalidDay: (m, max) => `${m} මාසය සඳහා දිනය 1 ත් ${max} ත් අතර විය යුතුය.`
     }
 };
 
