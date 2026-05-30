@@ -1,0 +1,353 @@
+// Zodiac calculations and translations data
+
+export const birthdays = [
+    { name: "Fathur-san", date: "01-16", month: 1, day: 16 },
+    { name: "Sahan-san", date: "08-10", month: 8, day: 10 },
+    { name: "Ounsan-san", date: "12-10", month: 12, day: 10 },
+    { name: "Mahesu-san", date: "04-03", month: 4, day: 3 },
+    { name: "Senito-san", date: "12-19", month: 12, day: 19 },
+    { name: "Zoo-san", date: "01-06", month: 1, day: 6 },
+    { name: "Ritakuken-san", date: "09-18", month: 9, day: 18 },
+    { name: "Nirosu-san", date: "12-06", month: 12, day: 6 },
+    { name: "Mon-san", date: "10-21", month: 10, day: 21 },
+    { name: "Suu-san", date: "07-31", month: 7, day: 31 },
+    { name: "Nisanto-san", date: "08-05", month: 8, day: 5 },
+    { name: "Ryukin-san", date: "04-18", month: 4, day: 18 },
+    { name: "Mya-san", date: "07-31", month: 7, day: 31 },
+    { name: "Rihekirei-san", date: "09-03", month: 9, day: 3 },
+    { name: "Ruchira-san", date: "06-18", month: 6, day: 18 },
+    { name: "Silvi-san", date: "06-27", month: 6, day: 27 }
+];
+
+export const zodiacData = {
+    0: {
+        name: { ja: '山羊座 (やぎざ)', id: 'Capricorn', en: 'Capricorn', zh: '摩羯座', my: 'ဆိတ်ထီး', ne: 'मकर', si: 'මකර' },
+        symbolName: { ja: '巻き角の海ヤギ', id: 'Kambing laut dengan tanduk melengkung', en: 'Sea-goat with curved horns', zh: '带弯角的海山羊', my: 'ခုံးသောဂျိုရှိသောဆိတ်', ne: 'घुमाउरो सिङ भएको समुद्री बाख्रा', si: 'වක්‍ර අං සහිත මුහුදු එළුවා' },
+        reading: 'Yagiza', emoji: '🐐', dateRange: '12/22 – 1/19', theme: 'theme-capricorn',
+        character: { ja: '規律正しく、勤勉で責任感が強い。現実的で忠実。', id: 'Disiplin, pekerja keras, bertanggung jawab, realistis, setia.', en: 'Disciplined, hardworking, responsible, realistic, loyal.', zh: '自律、勤奋、有责任心、务实、忠诚。', my: 'စည်းကမ်းသားရှိပြီး ပျင်းရိမှုမရှိပါ။ တာဝန်ယူမှုရှိပြီး အမှันတကယ်။', ne: 'अनुशासित, मेहनती, जिम्मेवार, व्यावहारिक, वफादार।', si: 'අනුශාසනාමය, කඩිසර, වගකීම් සහිත, යථාර්ථවාදී, විශ්වාසවන්ත.' },
+        msg: { ja: '努力家のあなたに、今年も素敵な成果が！', id: 'Semoga usahamu membuahkan hasil luar biasa!', en: 'May your efforts bring amazing results!', zh: '愿你的努力带来惊人的成果！', my: 'သင့်ကြိုးစားမှုများက အံ့သြဖွယ်ရာရလဒ်များရပါစေ!', ne: 'तपाईंको मेहनतले अद्भुत परिणाम ल्याओस्!', si: 'ඔබගේ ප්‍රයත්නය අද්භුත ප්‍රතිඵල ගෙනාවේවා!' },
+        svg: `<svg viewBox="0 0 200 200" class="w-full h-full"><defs><linearGradient id="c0" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8FBC8F"/><stop offset="100%" stop-color="#2F4F4F"/></linearGradient></defs><circle cx="100" cy="100" r="80" fill="url(#c0)" opacity="0.2"/><ellipse cx="100" cy="110" rx="40" ry="45" fill="#2F4F4F"/><circle cx="85" cy="95" r="7" fill="#333"/><circle cx="115" cy="95" r="7" fill="#333"/><circle cx="87" cy="93" r="2.5" fill="white"/><circle cx="117" cy="93" r="2.5" fill="white"/><ellipse cx="100" cy="105" rx="8" ry="5" fill="#FFB6C1"/><path d="M65 80 Q50 50 70 65" stroke="#DAA520" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M135 80 Q150 50 130 65" stroke="#DAA520" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M70 70 Q75 55 80 70" stroke="#8FBC8F" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M130 70 Q125 55 120 70" stroke="#8FBC8F" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M85 140 Q100 150 115 140" stroke="#333" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M70 150 Q60 170 80 165" stroke="#8FBC8F" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M130 150 Q140 170 120 165" stroke="#8FBC8F" stroke-width="4" fill="none" stroke-linecap="round"/></svg>`
+    },
+    1: {
+        name: { ja: '水瓶座 (みずがめざ)', id: 'Aquarius', en: 'Aquarius', zh: '水瓶座', my: 'ရေပုံး', ne: 'कुम्भ', si: 'කුම්භ' },
+        symbolName: { ja: '水が流れる水瓶を持つ人', id: 'Pembawa air dengan air mengalir', en: 'Water bearer with flowing water', zh: '流水的水瓶座', my: 'ရေစီးဆင်းနေသောရေအိုးထမ်းသူ', ne: 'बगिरहेको पानी भएको पानी वाहक', si: 'ගලායන ජලය සහිත දිය දෝතක්' },
+        reading: 'Mizubameza', emoji: '🏺', dateRange: '1/20 – 2/18', theme: 'theme-aquarius',
+        character: { ja: '自由思考で独立心が強く、創造的で社交的。', id: 'Berpikir bebas, mandiri, kreatif, sosial.', en: 'Free-thinking, independent, creative, social.', zh: '思想自由、独立、有创造力、善于社交。', my: 'လွတ်လပ်စဉ်းစားပြီး ลွတ်လပ်သူဖြစ်သည်။ ဖန်တီးနိုင်ပြီး လူမှုဆက်ဆံမှုပါသည်။', ne: 'स्वतन्त्र सोच, स्वतन्त्र, सिर्जनशील, सामाजिक।', si: 'නිදහස් චින්තනය, ස්වාධීන, නිර්මාණාත්මක, සමාජශීලී.' },
+        msg: { ja: '自由な発想で、今年も新しい世界を開こう！', id: 'Kejutkan semua orang dengan ide-ide barumu!', en: 'Surprise everyone with your new ideas!', zh: '用新想法让大家惊喜！', my: 'သင့်အကြံဉာဏသစ်များနဲ့ လူအားလုံးကို အံ့သြစေပါ!', ne: 'नयाँ विचारले semuaलाई आश्चर्यचकित पार्नुहोस्!', si: 'නව අදහස් වලින් සියලු දෙනාව පුදුම කරවන්න!' },
+        svg: `<svg viewBox="0 0 200 200" class="w-full h-full"><defs><linearGradient id="c1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#87CEEB"/><stop offset="100%" stop-color="#00BFFF"/></linearGradient></defs><circle cx="100" cy="100" r="80" fill="url(#c1)" opacity="0.2"/><ellipse cx="100" cy="70" rx="25" ry="20" fill="#C0C0C0"/><rect x="85" y="70" width="30" height="40" rx="5" fill="#A9A9A9"/><path d="M75 110 Q70 140 85 150 Q100 160 115 150 Q130 140 125 110" fill="none" stroke="#87CEEB" stroke-width="6" stroke-linecap="round"/><path d="M70 130 Q65 160 80 170" fill="none" stroke="#00BFFF" stroke-width="4" stroke-linecap="round" opacity="0.7"/><path d="M130 130 Q135 160 120 170" fill="none" stroke="#00BFFF" stroke-width="4" stroke-linecap="round" opacity="0.7"/><circle cx="85" cy="55" r="3" fill="#87CEEB" opacity="0.8"/><circle cx="115" cy="50" r="2" fill="#87CEEB" opacity="0.6"/></svg>`
+    },
+    2: {
+        name: { ja: '魚座 (うおざ)', id: 'Pisces', en: 'Pisces', zh: '双鱼座', my: 'ငါး', ne: 'मीन', si: 'මීන' },
+        symbolName: { ja: '泳ぐ二匹の魚', id: 'Dua ikan berenang', en: 'Two fish swimming', zh: '游动的两条鱼', my: 'ကူးခတ်နေသောငါးနှစ်ကောင်', ne: 'पैरिरहेका दुई माछाहरू', si: 'පිහිනන මසුන් දෙදෙනෙක්' },
+        reading: 'Uoza', emoji: '🐟', dateRange: '2/19 – 3/20', theme: 'theme-pisces',
+        character: { ja: '共感力が強く、感受性豊かで想像力に富み、優しくロマンチック。', id: 'Penuh empati, sensitif, imajinatif, lembut, romantis.', en: 'Empathetic, sensitive, imaginative, gentle, romantic.', zh: '富有同情心、敏感、富有想象力、温柔、浪漫。', my: 'သနားမှုရှိပြီး ခံစားမှုပါသည်။ စိတ်ကူးယဉ်ပြီး နူးညံ့ပြီး ရိုမန်တစ်ပါသည်။', ne: 'सहानुभूति, संवेदनशील, कल्पनाशील, कोमल, रोमान्टिक।', si: 'අනුකම්පා සහිත, සංවේදී, කල්පනාකාරී, මෘදු, රොමාන්ටික.' },
+        msg: { ja: '優しい心で、今年も愛に満ちた一年を！', id: 'Semoga tahun ini penuh cinta dan kebahagiaan!', en: 'May this year be filled with love and happiness!', zh: '愿今年充满爱与幸福！', my: 'ဒီနှစ်မှာ အချစ်နဲ့ ပျော်ရွှင်မှုနဲ့ ပြည့်ဝပါစေ!', ne: 'यस वर्ष माया र खुसीले भरिएको होस्!', si: 'මෙම වසර ප්‍රේමයෙන් සහ සතුටින් පිරී යාවි!' },
+        svg: `<svg viewBox="0 0 200 200" class="w-full h-full"><defs><linearGradient id="c2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#B0E0E6"/><stop offset="100%" stop-color="#9370DB"/></linearGradient></defs><circle cx="100" cy="100" r="80" fill="url(#c2)" opacity="0.2"/><ellipse cx="75" cy="90" rx="30" ry="18" fill="#9370DB" transform="rotate(-15 75 90)"/><path d="M50 90 L35 75 L35 105 Z" fill="#B0E0E6" transform="rotate(-15 75 90)"/><circle cx="65" cy="85" r="4" fill="#333" transform="rotate(-15 75 90)"/><ellipse cx="125" cy="110" rx="30" ry="18" fill="#9370DB" transform="rotate(15 125 110)"/><path d="M100 110 L85 95 L85 125 Z" fill="#B0E0E6" transform="rotate(15 125 110)"/><circle cx="115" cy="105" r="4" fill="#333" transform="rotate(15 125 110)"/><path d="M85 100 Q100 90 115 100" stroke="#FFB6C1" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.5"/></svg>`
+    },
+    3: {
+        name: { ja: '牡羊座 (おひつじざ)', id: 'Aries', en: 'Aries', zh: '白羊座', my: 'ဆိတ်ဖို', ne: 'मेष', si: 'මේෂ' },
+        symbolName: { ja: '炎をまとう牡羊', id: 'Domba jantan dengan api', en: 'Ram with fire', zh: '带火的公羊', my: 'မီးနှင့်သိုးထီး', ne: 'आगो भएको भेडा', si: 'ගින්දර සහිත බැටළුවා' },
+        reading: 'Ohitsujiza', emoji: '🐏', dateRange: '3/21 – 4/19', theme: 'theme-aries',
+        character: { ja: '勇敢でエネルギッシュ、リーダー気質で spontanious。', id: 'Pemberani, energik, pemimpin, spontan.', en: 'Brave, energetic, leader, spontaneous.', zh: '勇敢、精力充沛、领导者、spontaneous。', my: 'ရဲရင့်ပြီး စွမ်းအင်ပြည့်ဝသည်။ ခေါင်းဆောင်စိတ်ရှိပြီး အလျင်စလို။', ne: 'बहादुर, ऊर्जावान, नेता, स्वतःस्फूर्त।', si: 'දිරිගන්වන, ශක්තිමත්, නායකයා, ක්ෂණික.' },
+        msg: { ja: '勇敢に新しい冒険へ飛び込もう！', id: 'Terjun ke petualangan baru dengan berani!', en: 'Dive into new adventures bravely!', zh: '勇敢地投入新的冒险！', my: 'ရဲရင့်စွာ စွန့်စားခန်းအသစ်ထဲ ခုန်ဝင်ပါ!', ne: 'साहससँग नयाँ साहसिक कार्यमा हाम फाल्नुहोस्!', si: 'දිරිගන්වන ලෙස නව වික්‍රමාන්විත වලට පැන දමන්න!' },
+        svg: `<svg viewBox="0 0 200 200" class="w-full h-full"><defs><linearGradient id="c3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FF6347"/><stop offset="100%" stop-color="#DC143C"/></linearGradient></defs><circle cx="100" cy="100" r="80" fill="url(#c3)" opacity="0.2"/><ellipse cx="100" cy="110" rx="40" ry="45" fill="#8B0000"/><circle cx="85" cy="95" r="7" fill="#333"/><circle cx="115" cy="95" r="7" fill="#333"/><circle cx="87" cy="93" r="2.5" fill="white"/><circle cx="117" cy="93" r="2.5" fill="white"/><ellipse cx="100" cy="105" rx="8" ry="5" fill="#FFB6C1"/><path d="M60 80 Q40 50 65 65" stroke="#DC143C" stroke-width="12" fill="none" stroke-linecap="round"/><path d="M140 80 Q160 50 135 65" stroke="#DC143C" stroke-width="12" fill="none" stroke-linecap="round"/><path d="M65 70 Q75 55 85 70" stroke="#FFD700" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M135 70 Q125 55 115 70" stroke="#FFD700" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M85 145 Q100 155 115 145" stroke="#333" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`
+    },
+    4: {
+        name: { ja: '牡牛座 (おうしざ)', id: 'Taurus', en: 'Taurus', zh: '金牛座', my: 'နွားဖို', ne: 'वृष', si: 'වෘෂභ' },
+        symbolName: { ja: '大きな角を持つ雄牛', id: 'Banteng dengan tanduk besar', en: 'Bull with large horns', zh: '大角公牛', my: 'ဂျိုကြီးသောနွားသိုး', ne: 'ठूलो सिङ भएको साँढे', si: 'විශාල අං සහිත ගොනා' },
+        reading: 'Oushiza', emoji: '🐂', dateRange: '4/20 – 5/20', theme: 'theme-taurus',
+        character: { ja: '忍耐強く、忠実で、快適さを愛し、頑固だが頼りになる。', id: 'Penyabar, setia, suka kenyamanan, keras kepala tapi bisa diandalkan.', en: 'Patient, loyal, loves comfort, stubborn but reliable.', zh: '有耐心、忠诚、喜欢舒适、固执但可靠。', my: 'သည်းခံမှုရှိပြီး သစ္စာရှိသည်။ အဆင်ပြေမှုကိုချစ်ပြီး ခိုင်မာပြီး အားကိုးရသည်။', ne: 'धैर्यवान, वफादार, आराम मनपराउने, हठी तर भरपर्दो।', si: 'ඉවසිමි, විශ්වාසවන්ත, සුවපහසුව ප්‍රිය කරන, මුරණ්ඩු නමුත් විශ්වාසවන්ත.' },
+        msg: { ja: '安定の中に、大きな幸せが見つかりますように！', id: 'Semoga kebahagiaan besar datang dari kenyamanan!', en: 'May great happiness come from comfort!', zh: '愿巨大的幸福从舒适中来！', my: 'အဆင်ပြေမှုကနေ ကြီးမားတဲ့ပျော်ရွှင်မှုရပါစေ!', ne: 'आरामबाट ठूलो खुसी आओस्!', si: 'සුවපහසුවෙන් විශාල සතුට පැමිණේවා!' },
+        svg: `<svg viewBox="0 0 200 200" class="w-full h-full"><defs><linearGradient id="c4" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8FBC8F"/><stop offset="100%" stop-color="#228B22"/></linearGradient></defs><circle cx="100" cy="100" r="80" fill="url(#c4)" opacity="0.2"/><ellipse cx="100" cy="105" rx="50" ry="48" fill="#2E5C3C"/><circle cx="80" cy="85" r="9" fill="#333"/><circle cx="120" cy="85" r="9" fill="#333"/><circle cx="82" cy="83" r="3" fill="white"/><circle cx="122" cy="83" r="3" fill="white"/><ellipse cx="100" cy="95" rx="14" ry="10" fill="#FFB6C1"/><path d="M55 65 Q40 35 60 50" stroke="#8B4513" stroke-width="12" fill="none" stroke-linecap="round"/><path d="M145 65 Q160 35 140 50" stroke="#8B4513" stroke-width="12" fill="none" stroke-linecap="round"/><path d="M60 55 Q70 40 80 55" stroke="#FFD700" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M140 55 Q130 40 120 55" stroke="#FFD700" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M85 140 Q100 150 115 140" stroke="#333" stroke-width="4" fill="none" stroke-linecap="round"/></svg>`
+    },
+    5: {
+        name: { ja: '双子座 (ふたござ)', id: 'Gemini', en: 'Gemini', zh: '双子座', my: 'အမွှာ', ne: 'मिथुन', si: 'මිථුන' },
+        symbolName: { ja: '双子の子どもたち', id: 'Anak kembar', en: 'Twins', zh: '双胞胎', my: 'အမွှာကလေးများ', ne: 'जुम्ल्याहा बच्चाहरू', si: 'නිවුන් දරුවන්' },
+        reading: 'Futagoza', emoji: '👯', dateRange: '5/21 – 6/20', theme: 'theme-gemini',
+        character: { ja: '社交的で頭が良く、多才だが飽きっぽく、コミュニケーションが得意。', id: 'Sosial, cerdas, serba bisa, cepat bosan, komunikatif.', en: 'Social, clever, versatile, easily bored, communicative.', zh: '善于交际、聪明、多才多艺、容易厌倦、善于沟通。', my: 'လူမှုဆက်ဆံမှုပါပြီး ဉာဏ်ကောင်းသည်။ အရည်အချင်းစုံပြီး ငြီးငွေ့လွယ်ပြီး ဆက်သွယ်နိုင်သည်။', ne: 'सामाजिक, चतुर, बहुमुखी, छिटो बोर हुने, सञ्चारमय।', si: 'සමාජශීලී, බුද්ධිමත්, බහුමුඛ, පහසුවෙන් කම්මැලි, සන්නිවේදන.' },
+        msg: { ja: '多才な魅力で、今年も輝き続けよう！', id: 'Bersinar terus dengan pesona serba bisa!', en: 'Keep shining with your versatile charm!', zh: '用你多才多艺的魅力继续闪耀！', my: 'သင့်စွမ်းရည်စုံဆွဲဆောင်မှုနဲ့ ဆက်လက်ထွန်းလင်းပါ!', ne: 'बहुमुखी आकर्षणले चम्किरहनुहोस्!', si: 'ඔබේ බහුමුඛ ආකර්ෂණයෙන් දිගටම දීප්තිමත් වන්න!' },
+        svg: `<svg viewBox="0 0 200 200" class="w-full h-full"><defs><linearGradient id="c5" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFD700"/><stop offset="100%" stop-color="#87CEFA"/></linearGradient></defs><circle cx="100" cy="100" r="80" fill="url(#c5)" opacity="0.2"/><circle cx="70" cy="100" r="35" fill="#FFD700" opacity="0.9"/><circle cx="130" cy="100" r="35" fill="#87CEFA" opacity="0.9"/><circle cx="70" cy="100" r="30" fill="#FFF8DC"/><circle cx="130" cy="100" r="30" fill="#F0F8FF"/><circle cx="60" cy="90" r="6" fill="#333"/><circle cx="80" cy="90" r="6" fill="#333"/><circle cx="120" cy="90" r="6" fill="#333"/><circle cx="140" cy="90" r="6" fill="#333"/><circle cx="61" cy="89" r="2" fill="white"/><circle cx="81" cy="89" r="2" fill="white"/><circle cx="121" cy="89" r="2" fill="white"/><circle cx="141" cy="89" r="2" fill="white"/><ellipse cx="70" cy="105" rx="7" ry="5" fill="#FFB6C1"/><ellipse cx="130" cy="105" rx="7" ry="5" fill="#FFB6C1"/><path d="M60 120 Q70 130 80 120" stroke="#333" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M120 120 Q130 130 140 120" stroke="#333" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`
+    },
+    6: {
+        name: { ja: '蟹座 (かにざ)', id: 'Cancer', en: 'Cancer', zh: '巨蟹座', my: 'ပုဇွန်း', ne: 'कर्कट', si: 'කටක' },
+        symbolName: { ja: '大きなハサミを持つ蟹', id: 'Kepiting dengan capit', en: 'Crab with claws', zh: '带钳子的螃蟹', my: 'လက်မရှိသောပုဇွန်လုံး', ne: 'चिम्टा भएको गँगटो', si: 'කටු සහිත කකුළුවා' },
+        reading: 'Kaniza', emoji: '🦀', dateRange: '6/21 – 7/22', theme: 'theme-cancer',
+        character: { ja: '家族思いで保護的、感受性が強く、直感が鋭い。', id: 'Penyayang, protektif, sensitif, intuisi kuat.', en: 'Caring, protective, sensitive, strong intuition.', zh: '有爱心、保护性强、敏感、直觉敏锐。', my: 'ချစ်ခင်ပြီး မိသားစုကိုကာကွယ်လိုသည်။ ခံစားမှုပါပြီး ခန္ဓာဗေဒပါသည်။', ne: 'हेरचाह गर्ने, सुरक्षात्मक, संवेदनशील, सशक्त अन्तर्ज्ञान।', si: 'සැලකිලිමත්, ආරක්ෂාව, සංවේදී, ශක්තිමත් අන්තර්ගතය.' },
+        msg: { ja: '大切な人に囲まれて、温かい一年を！', id: 'Dikelilingi orang terkasih, tahun yang hangat!', en: 'Surrounded by loved ones, a warm year!', zh: '被亲人包围，温暖的一年！', my: 'အရေးပါသောလူများနဲ့ ဝိုင်းဝန်း၍ နွေးထွေးသောနှစ်တစ်နှစ်!', ne: 'प्रियजनहरूले घेरिएको, तातो वर्ष!', si: 'ප්‍රියමිතුරන් වටවී උණුසුම් වසරක්!' },
+        svg: `<svg viewBox="0 0 200 200" class="w-full h-full"><defs><linearGradient id="c6" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#E6E6FA"/><stop offset="100%" stop-color="#4682B4"/></linearGradient></defs><circle cx="100" cy="100" r="80" fill="url(#c6)" opacity="0.2"/><ellipse cx="100" cy="110" rx="45" ry="35" fill="#4682B4"/><circle cx="85" cy="95" r="7" fill="#333"/><circle cx="115" cy="95" r="7" fill="#333"/><circle cx="87" cy="93" r="2.5" fill="white"/><circle cx="117" cy="93" r="2.5" fill="white"/><ellipse cx="100" cy="105" rx="8" ry="5" fill="#FFB6C1"/><path d="M55 85 Q30 60 45 50" stroke="#4682B4" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M145 85 Q170 60 155 50" stroke="#4682B4" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M40 55 Q35 45 45 40" stroke="#4682B4" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M160 55 Q165 45 155 40" stroke="#4682B4" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M65 130 Q50 150 70 155" stroke="#4682B4" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M135 130 Q150 150 130 155" stroke="#4682B4" stroke-width="6" fill="none" stroke-linecap="round"/></svg>`
+    },
+    7: {
+        name: { ja: '獅子座 (ししざ)', id: 'Leo', en: 'Leo', zh: '狮子座', my: 'ခြင်္သေ', ne: 'सिंह', si: 'සිංහ' },
+        symbolName: { ja: '太陽の光をまとうライオン', id: 'Singa dengan surya', en: 'Lion with sun', zh: '带太阳的狮子', my: 'နေရောင်နှင့်ခြင်္သေ့', ne: 'सूर्य भएको सिंह', si: 'සූර්යයා සහිත සිංහයා' },
+        reading: 'Shishiza', emoji: '🦁', dateRange: '7/23 – 8/22', theme: 'theme-leo',
+        character: { ja: '自信に満ち、カリスマ性があり、注目の的で、気前が良く、友人に忠実。', id: 'Percaya diri, karismatik, pusat perhatian, murah hati, setia.', en: 'Confident, charismatic, center of attention, generous, loyal.', zh: '自信、有魅力、焦点、慷慨、忠诚。', my: 'ယုံကြည်မှုရှိပြီး ဆွဲဆောင်မှုရှိသည်။ အာရုံစိုက်မှုကို ချစ်ပြီး ဧည့်စားကောင်းပြီး သစ္စာရှိသည်။', ne: 'आत्मविश्वासी, करिश्माई, ध्यानको केन्द्र, उदार, वफादार।', si: 'විශ්වාසවන්ත, ආකර්ෂණීය, අවධානයේ මධ්‍යස්ථානය, උදාර, විශ්වාසවන්ත.' },
+        msg: { ja: '輝くスターとして、最高の一年を！', id: 'Bersinar sebagai bintang, tahun terbaik!', en: 'Shine as a star, have the best year!', zh: '像星星一样闪耀，度过最棒的一年！', my: 'ကြယ်ပွင့်တစ်ပွင့်လို ထွန်းလင်းပြီး အကောင်းဆုံးနှစ်တစ်နှစ်!', ne: 'ताराको रूपमा चम्कनुहोस्, उत्कृष्ट वर्ष!', si: 'තරුවක් ලෙස දීප්තිමත් වන්න, හොඳම වසර!' },
+        svg: `<svg viewBox="0 0 200 200" class="w-full h-full"><defs><linearGradient id="c7" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFD700"/><stop offset="100%" stop-color="#FF8C00"/></linearGradient></defs><circle cx="100" cy="100" r="80" fill="url(#c7)" opacity="0.2"/><circle cx="100" cy="100" r="55" fill="#FF8C00" opacity="0.8"/><circle cx="100" cy="100" r="40" fill="#FFD700"/><circle cx="85" cy="90" r="8" fill="#333"/><circle cx="115" cy="90" r="8" fill="#333"/><circle cx="87" cy="88" r="3" fill="white"/><circle cx="117" cy="88" r="3" fill="white"/><ellipse cx="100" cy="100" rx="10" ry="7" fill="#FFB6C1"/><path d="M70 70 Q50 40 75 55" stroke="#FFD700" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M130 70 Q150 40 125 55" stroke="#FFD700" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M60 85 Q40 70 55 80" stroke="#FFD700" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M140 85 Q160 70 145 80" stroke="#FFD700" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M85 125 Q100 135 115 125" stroke="#333" stroke-width="4" fill="none" stroke-linecap="round"/></svg>`
+    },
+    8: {
+        name: { ja: '乙女座 (おとめざ)', id: 'Virgo', en: 'Virgo', zh: '处女座', my: 'ကောင်မလေး', ne: 'कन्या', si: 'කන්‍යා' },
+        symbolName: { ja: '麦の穂を持つ乙女', id: 'Gadis dengan gandum', en: 'Maiden with wheat', zh: '持小麦的少女', my: 'ဂျုံနှံကိုင်ဆောင်ထားသောမိန်းကလေး', ne: 'गहुँको बाला समातेकी केटी', si: 'තිරිඟු සහිත කන්‍යාව' },
+        reading: 'Otomeza', emoji: '👧', dateRange: '8/23 – 9/22', theme: 'theme-virgo',
+        character: { ja: '分析的で完璧主義、几帳面で、助けるのが好きで、細部に厳しい。', id: 'Analitis, perfeksionis, rapi, suka menolong, kritis detail.', en: 'Analytical, perfectionist, neat, helpful, detail-critical.', zh: '善于分析、完美主义、整洁、乐于助人、对细节挑剔。', my: 'ခွဲခြမ်းစိတ်ဖြาပြီး ပြီးပြည့်စုံမှုကို တ追求သည်။ သပ်ရပ်ပြီး ကူညီချင်ပြီး အသေးစိတ်ကို ဝေဖန်သည်။', ne: 'विश्लेषणात्मक, परफेक्शनिस्ट, सफा, मदत गर्ने, विवरणमा कठोर।', si: 'විශ්ලේෂණාත්මක, පරිපූර්ණවාදී, පිරිසිදු, උදව් කිරීමට කැමති, විස්තරවලට දැඩි.' },
+        msg: { ja: '繊細な職人技で、素晴らしい成果を！', id: 'Dengan kerajinan teliti, hasil luar biasa!', en: 'With delicate craftsmanship, amazing results!', zh: '以精湛的工艺，取得惊人的成果！', my: 'စေ့စေ့စပ်စပ် လက်သမားနည်းပညာနဲ့ အံ့သြဖွယ်ရာရလဒ်များ!', ne: 'सूक्ष्म कारीगरीसँग, अद्भुत परिणामहरू!', si: 'සියුම් ශිල්පයෙන්, අද්භුත ප්‍රතිඵල!' },
+        svg: `<svg viewBox="0 0 200 200" class="w-full h-full"><defs><linearGradient id="c8" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F5DEB3"/><stop offset="100%" stop-color="#8B7355"/></linearGradient></defs><circle cx="100" cy="100" r="80" fill="url(#c8)" opacity="0.2"/><ellipse cx="100" cy="110" rx="35" ry="40" fill="#8B7355"/><circle cx="100" cy="65" r="30" fill="#F5DEB3"/><circle cx="90" cy="60" r="6" fill="#333"/><circle cx="110" cy="60" r="6" fill="#333"/><circle cx="91" cy="59" r="2" fill="white"/><circle cx="111" cy="59" r="2" fill="white"/><ellipse cx="100" cy="72" rx="7" ry="5" fill="#FFB6C1"/><path d="M85 85 Q100 95 115 85" stroke="#8B7355" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M70 40 Q60 20 75 30" stroke="#556B2F" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M130 40 Q140 20 125 30" stroke="#556B2F" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M85 140 Q100 150 115 140" stroke="#333" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`
+    },
+    9: {
+        name: { ja: '天秤座 (てんびんざ)', id: 'Libra', en: 'Libra', zh: '天秤座', my: 'ချိန်ခွက်', ne: 'तुला', si: 'තුලා' },
+        symbolName: { ja: '星々をあしらった天秤', id: 'Timbangan dengan bintang', en: 'Scales with stars', zh: '带星星的天平', my: 'ကြယ်များနှင့်ချိန်ခွင်', ne: 'ताराहरू भएको तराजु', si: 'තරු සහිත තරාදිය' },
+        reading: 'Tenbinza', emoji: '⚖️', dateRange: '9/23 – 10/22', theme: 'theme-libra',
+        character: { ja: '平和を愛し、公平で、魅力的で、外交的だが優柔不断。', id: 'Cinta damai, adil, memesona, diplomatis tapi ragu-ragu.', en: 'Peace-loving, fair, charming, diplomatic but indecisive.', zh: '热爱和平、公正、迷人、善于外交但犹豫不决。', my: 'ငြိမ်းချမ်းမှုကို ချစ်ပြီး တရားမျှတပြီး ဆွဲဆောင်မှုရှိပြီး သံတမန်နည်းပညာရှိပြီး မသေချာတတ်သည်။', ne: 'शान्तिमय, निष्पक्ष, आकर्षक, कूटनीतिक तर अनिर्णायक।', si: 'සාමයට කැමති, සාධාරණ, ආකර්ෂණීය, රාජ්‍යතාන්ත්‍රික නමුත් අනිශ්චිත.' },
+        msg: { ja: '調和の中に、美しいバランスを見つけよう！', id: 'Temukan keseimbangan indah dalam harmoni!', en: 'Find beautiful balance in harmony!', zh: '在和谐中找到美丽的平衡！', my: 'ညီညွတ်မှုထဲမှာ လှပတဲ့ညီညွတ်မှုကိုရှာပါ!', ne: 'सद्भावमा सुन्दर सन्तुलन पाउनुहोस्!', si: 'සාමයේ සුන්දර සමතුලිතය සොයා ගන්න!' },
+        svg: `<svg viewBox="0 0 200 200" class="w-full h-full"><defs><linearGradient id="c9" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFB6C1"/><stop offset="100%" stop-color="#DDA0DD"/></linearGradient></defs><circle cx="100" cy="100" r="80" fill="url(#c9)" opacity="0.2"/><line x1="100" y1="50" x2="100" y2="130" stroke="#DDA0DD" stroke-width="4" stroke-linecap="round"/><circle cx="100" cy="45" r="8" fill="#FFB6C1"/><line x1="60" y1="130" x2="140" y2="130" stroke="#DDA0DD" stroke-width="4" stroke-linecap="round"/><path d="M50 130 L35 160 L65 160 Z" fill="#87CEEB" opacity="0.8"/><path d="M135 130 L120 160 L150 160 Z" fill="#87CEEB" opacity="0.8"/><circle cx="50" cy="155" r="5" fill="#FFD700" opacity="0.7"/><circle cx="130" cy="155" r="5" fill="#FFD700" opacity="0.7"/></svg>`
+    },
+    10: {
+        name: { ja: '蠍座 (さそりざ)', id: 'Scorpio', en: 'Scorpio', zh: '天蝎座', my: 'ပက်ကျိ', ne: 'वृश्चिक', si: 'වෘශ්චික' },
+        symbolName: { ja: '毒針の尾を持つサソリ', id: 'Kalajengking dengan ekor', en: 'Scorpion with a tail', zh: '带尾巴的蝎子', my: 'အမြီးရှိသောကိန်းဂဏန်း', ne: 'पुच्छर भएको बिच्छी', si: 'වලිගය සහිත ගෝනුස්සා' },
+        reading: 'Sasoriza', emoji: '🦂', dateRange: '10/23 – 11/21', theme: 'theme-scorpio',
+        character: { ja: '神秘的で情熱的、忠実で、強い意志を持ち、嫉妬深い。', id: 'Misterius, gairah, setia, tekad kuat, pencemburu.', en: 'Mysterious, passionate, loyal, strong-willed, jealous.', zh: '神秘、热情、忠诚、意志坚强、嫉妒。', my: 'လျှို့ဝှက်ပြီး စိတ်အားထက်သန်သည်။ သစ္စာရှိပြီး ဆန္ဒအားကောင်းပြီး ငြူစူခြင်းရှိသည်။', ne: 'रहस्यमय, जोशिलो, वफादार, दृढ़ इच्छाशक्ति, ईर्ष्यालू।', si: 'රහස්‍යමය, උනන්දුවෙන්, විශ්වාසවන්ත, ශක්තිමත් කැමැත්ත, ඊර්ෂ්‍යාව.' },
+        msg: { ja: '深い情熱で、真の愛と成功を掴もう！', id: 'Dengan gairah mendalam, raih cinta sejati dan sukses!', en: 'With deep passion, grab true love and success!', zh: '用深沉的热情，抓住真爱和成功！', my: 'နက်နဲသောစိတ်အားထက်သန်မှုနဲ့ အစစ်အမှန်အချစ်နဲ့ အောင်မြင်မှုကို ဖမ်းယူပါ!', ne: 'गहिरो जोशसँग, साँचो माया र सफलता हासिल गर्नुहोस्!', si: 'ගැඹුරු උනන්දුවෙන්, සැබෑ ප්‍රේමය සහ සාර්ථකත්වය අල්ලා ගන්න!' },
+        svg: `<svg viewBox="0 0 200 200" class="w-full h-full"><defs><linearGradient id="c10" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4B0082"/><stop offset="100%" stop-color="#8B0000"/></linearGradient></defs><circle cx="100" cy="100" r="80" fill="url(#c10)" opacity="0.2"/><ellipse cx="100" cy="100" rx="50" ry="25" fill="#4B0082" transform="rotate(-20 100 100)"/><circle cx="75" cy="85" r="7" fill="#333" transform="rotate(-20 100 100)"/><circle cx="85" cy="80" r="7" fill="#333" transform="rotate(-20 100 100)"/><circle cx="76" cy="84" r="2.5" fill="white" transform="rotate(-20 100 100)"/><circle cx="86" cy="79" r="2.5" fill="white" transform="rotate(-20 100 100)"/><ellipse cx="80" cy="90" rx="6" ry="4" fill="#FFB6C1" transform="rotate(-20 100 100)"/><path d="M50 110 Q30 100 40 90" stroke="#8B0000" stroke-width="8" fill="none" stroke-linecap="round" transform="rotate(-20 100 100)"/><path d="M140 75 Q160 65 155 50" stroke="#8B0000" stroke-width="6" fill="none" stroke-linecap="round" transform="rotate(-20 100 100)"/><circle cx="165" cy="35" r="4" fill="#8B0000" transform="rotate(-20 100 100)"/></svg>`
+    },
+    11: {
+        name: { ja: '射手座 (いてざ)', id: 'Sagittarius', en: 'Sagittarius', zh: '射手座', my: 'မြားပစ်', ne: 'धनु', si: 'ධනු' },
+        symbolName: { ja: '弓矢を構える射手', id: 'Pemanah dengan panah', en: 'Archer with arrow', zh: '手持弓箭的射手', my: 'မြားနှင့်လေးသမား', ne: 'तीर-धनुष भएको धनुर्धारी', si: 'ඊතල සහිත දුනුවායා' },
+        reading: 'Iteza', emoji: '🏹', dateRange: '11/22 – 12/21', theme: 'theme-sagittarius',
+        character: { ja: '自由を愛し、楽観的で、正直で、冒険心に満ちている。', id: 'Suka kebebasan, optimis, jujur, petualang.', en: 'Loves freedom, optimistic, honest, adventurous.', zh: '热爱自由、乐观、诚实、充满冒险精神。', my: 'လွတ်လပ်မှုကို ချစ်ပြီး အားကောင်းပြီး အမှန်တကယ်ဖြစ်ပြီး စွန့်စားချင်စိတ်ရှိသည်။', ne: 'स्वतन्त्रता मनपराउने, आशावादी, इमानदार, साहसिक।', si: 'නිදහසට කැමති, සාමකාමී, අවංක, වික්‍රමාන්විත.' },
+        msg: { ja: '矢を放ち、夢に向かって進もう！', id: 'Lepaskan panahmu dan kejar mimpimu!', en: 'Release your arrow and chase your dreams!', zh: '释放你的箭，追逐梦想！', my: 'သင့်မြားကို လွှတ်ပြီး အိပ်မက်ကို လိုက်လှမ်းပါ!', ne: 'आफ्नो बाण छोड्नुहोस् र सपना पछ्याउनुहोस्!', si: 'ඔබගේ ඊතලය මුදා හරින්न සහ ඔබගේ සිහින එළඹදාව!' },
+        svg: `<svg viewBox="0 0 200 200" class="w-full h-full"><defs><linearGradient id="c11" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4B0082"/><stop offset="100%" stop-color="#008B8B"/></linearGradient></defs><circle cx="100" cy="100" r="80" fill="url(#c11)" opacity="0.2"/><circle cx="100" cy="100" r="70" fill="none" stroke="#4B0082" stroke-width="2" stroke-dasharray="8,4" opacity="0.5"/><path d="M50 140 Q70 110 100 100 Q130 90 150 60" stroke="#FFD700" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M140 50 L160 60 L150 70 Z" fill="#FFD700"/><circle cx="100" cy="100" r="12" fill="#008B8B"/><circle cx="100" cy="100" r="8" fill="#4B0082"/><circle cx="100" cy="100" r="4" fill="#FFD700"/><path d="M85 115 Q100 130 115 115" stroke="#008B8B" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="60" cy="70" r="3" fill="#FFD700" opacity="0.6"/><circle cx="140" cy="80" r="2" fill="#FFD700" opacity="0.4"/><circle cx="80" cy="50" r="2" fill="#FFD700" opacity="0.5"/></svg>`
+    }
+};
+
+export const translations = {
+    ja: {
+        happyBirthday: 'お誕生日おめでとう',
+        yourZodiac: 'あなたの星座',
+        zodiacSymbol: '星座のシンボル',
+        tapToFlip: 'タップして詳細を見る',
+        tapToFlipBack: 'タップして戻る',
+        character: '性格',
+        fortune: '今日の運勢',
+        love: '恋愛',
+        money: '金運',
+        study: '勉強',
+        health: '健康',
+        newCard: 'New Card',
+        createSubtitle: '特別な誕生日カードを作ろう',
+        nameLabel: '名前',
+        monthLabel: '月',
+        dayLabel: '日',
+        generate: 'カードを作成',
+        back: '戻る',
+        birthdayMsg: n => `🎉 ${n}さん 🎉\n\nお誕生日おめでとうございます！🥳\n\n今年も素敵な一年になりますように！🌟\n\n日本語ももっと上手になるよ！📚✨\n\nNICC の皆より 💖`,
+        loadingAi: '🔮 AIが今年の運勢を占っています...',
+        aiHoroscopeTitle: '✨ AI 運勢鑑定書 (Gemini) ✨',
+        aiPrediction: '今年の展開',
+        aiSolution: '乗り越え方・解決策',
+        aiGoodNews: 'あなたを待つ吉報',
+        aiAdvice: '未来へのアドバイス',
+        guestNotice: '※ GUESTモード (今日の星座を表示中)',
+        todayDate: '本日'
+    },
+    id: {
+        happyBirthday: 'Selamat Ulang Tahun',
+        yourZodiac: 'Zodiak Kamu',
+        zodiacSymbol: 'Simbol Zodiak',
+        tapToFlip: 'Ketuk untuk detail',
+        tapToFlipBack: 'Ketuk untuk kembali',
+        character: 'Karakter',
+        fortune: 'Ramalan',
+        love: 'Asmara',
+        money: 'Keuangan',
+        study: 'Belajar',
+        health: 'Kesehatan',
+        newCard: 'Kartu Baru',
+        createSubtitle: 'Buat kartu ulang tahun spesial',
+        nameLabel: 'Nama',
+        monthLabel: 'Bulan',
+        dayLabel: 'Tanggal',
+        generate: 'Buat Kartu',
+        back: 'Kembali',
+        birthdayMsg: n => `🎉 ${n} 🎉\n\nSelamat Ulang Tahun! 🥳\n\nSemoga tahun ini penuh kebahagiaan! 🌟\n\nBahasa Jepangmu juga makin jago! 📚✨\n\nDari teman-teman NICC 💖`,
+        loadingAi: '🔮 AI Gemini sedang meramal tahun ini...',
+        aiHoroscopeTitle: '✨ Hasil Ramalan AI Gemini ✨',
+        aiPrediction: 'Perjalanan Tahun Ini',
+        aiSolution: 'Solusi & Tantangan',
+        aiGoodNews: 'Kabar Baik Menanti',
+        aiAdvice: 'Saran Langkah ke Depan',
+        guestNotice: '* Mode GUEST (Menampilkan zodiak hari ini)',
+        todayDate: 'Hari ini'
+    },
+    en: {
+        happyBirthday: 'Happy Birthday',
+        yourZodiac: 'Your Zodiac',
+        zodiacSymbol: 'Zodiac Symbol',
+        tapToFlip: 'Tap for details',
+        tapToFlipBack: 'Tap to go back',
+        character: 'Character',
+        fortune: 'Fortune',
+        love: 'Love',
+        money: 'Money',
+        study: 'Study',
+        health: 'Health',
+        newCard: 'New Card',
+        createSubtitle: 'Create a special birthday card',
+        nameLabel: 'Name',
+        monthLabel: 'Month',
+        dayLabel: 'Day',
+        generate: 'Create Card',
+        back: 'Back',
+        birthdayMsg: n => `🎉 ${n} 🎉\n\nHappy Birthday! 🥳\n\nWishing you a wonderful year! 🌟\n\nYour Japanese will get better! 📚✨\n\nFrom NICC 💖`,
+        loadingAi: '🔮 Gemini AI is generating your reading...',
+        aiHoroscopeTitle: '✨ AI Gemini Horoscope Report ✨',
+        aiPrediction: 'This Year\'s Path',
+        aiSolution: 'Solutions & Hurdles',
+        aiGoodNews: 'Good News Awaiting',
+        aiAdvice: 'Advice for the Future',
+        guestNotice: '* GUEST Mode (Displaying today\'s zodiac)',
+        todayDate: 'Today'
+    },
+    zh: {
+        happyBirthday: '生日快乐',
+        yourZodiac: '你的星座',
+        zodiacSymbol: '星座象征',
+        tapToFlip: '点击查看详情',
+        tapToFlipBack: '点击返回',
+        character: '性格',
+        fortune: '运势',
+        love: '爱情',
+        money: '财运',
+        study: '学业',
+        health: '健康',
+        newCard: '新卡片',
+        createSubtitle: '制作特别的生日卡片',
+        nameLabel: '姓名',
+        monthLabel: '月',
+        dayLabel: '日',
+        generate: '制作卡片',
+        back: '返回',
+        birthdayMsg: n => `🎉 ${n} 🎉\n\n生日快乐！🥳\n\n祝你今年幸福快乐！🌟\n\n日语也会越来越好！📚✨\n\n来自NICC的大家 💖`,
+        loadingAi: '🔮 AI Gemini 正在解析您的今年运势...',
+        aiHoroscopeTitle: '✨ AI Gemini 运势报告 ✨',
+        aiPrediction: '今年运势展开',
+        aiSolution: '解决方案与对策',
+        aiGoodNews: '等待你的好消息',
+        aiAdvice: '未来行动建议',
+        guestNotice: '* 访客模式 (显示今天的星座)',
+        todayDate: '今天'
+    },
+    my: {
+        happyBirthday: 'မွေးနေ့မှီး',
+        yourZodiac: 'သင့်ရဲ့ဇော်ဒိ',
+        zodiacSymbol: 'ဇော်ဒိသင်္ကေတ',
+        tapToFlip: 'အသေးစိတ်ကြည့်ရန် တို့ပါ',
+        tapToFlipBack: 'နောက်သို့ တို့ပါ',
+        character: 'စရိုက်',
+        fortune: 'ကံ',
+        love: 'အချစ်',
+        money: 'ငွေ',
+        study: 'ပညာ',
+        health: 'ကျန်းမာ',
+        newCard: 'ကတ်ပြားအသစ်',
+        createSubtitle: 'အထူးမွေးနေ့ကတ်ပြားဖန်တီး',
+        nameLabel: 'အမည်',
+        monthLabel: 'လ',
+        dayLabel: 'ရက်',
+        generate: 'ကတ်ပြားဖန်တီး',
+        back: 'နောက်သို့',
+        birthdayMsg: n => `🎉 ${n} 🎉\n\nမွေးနေ့မှီး! 🥳\n\nဒီနှစ်မှာ ပျော်ရွှင်မှုများစွာရပါစေ! 🌟\n\nဂျပန်စာလည်း ပိုကောင်းလာလိမ့်မယ်! 📚✨\n\nNICC မိတ်ဆွေများမှ 💖`,
+        loadingAi: '🔮 AI Gemini မှ သင့်ကံကြမ္မာကို ဟောပြောနေပါသည်...',
+        aiHoroscopeTitle: '✨ AI Gemini ရဲ့ ဟောစာတမ်း ✨',
+        aiPrediction: 'ယခုနှစ်အတွင်း ကံကြမ္မာ',
+        aiSolution: 'အခက်အခဲများအတွက် အဖြေရှာခြင်း',
+        aiGoodNews: 'စောင့်မျှော်နေသော သတင်းကောင်းများ',
+        aiAdvice: 'နောင်အနာဂတ်အတွက် အကြံပြုချက်',
+        guestNotice: '* ဧည့်သည်မုဒ် (ယနေ့ဇာတာကိုပြသနေသည်)',
+        todayDate: 'ယနေ့'
+    },
+    ne: {
+        happyBirthday: 'जन्मदिनको शुभकामना',
+        yourZodiac: 'तपाईंको राशि',
+        zodiacSymbol: 'राशिको प्रतीक',
+        tapToFlip: 'विवरणको लागि ट्याप गर्नुहोस्',
+        tapToFlipBack: 'फर्कन ट्याप गर्नुहोस्',
+        character: 'चरित्र',
+        fortune: 'भाग्य',
+        love: 'माया',
+        money: 'धन',
+        study: 'पढाइ',
+        health: 'स्वास्थ्य',
+        newCard: 'नयाँ कार्ड',
+        createSubtitle: 'विशेष जन्मदिन कार्ड बनाऔ',
+        nameLabel: 'नाम',
+        monthLabel: 'महिना',
+        dayLabel: 'दिन',
+        generate: 'कार्ड बनाऔ',
+        back: 'पछाडि',
+        birthdayMsg: n => `🎉 ${n} 🎉\n\nजन्मदिनको शुभकामना! 🥳\n\nयस वर्ष खुसीले भरिएको होस्! 🌟\n\nजापानी भाषा पनि राम्रो हुन्छ! 📚✨\n\nNICC का सबै साथीहरूबाट 💖`,
+        loadingAi: '🔮 AI Gemini ले तपाईंको भाग्य गणना गर्दैछ...',
+        aiHoroscopeTitle: '✨ AI Gemini राशिफल रिपोर्ट ✨',
+        aiPrediction: 'यस वर्षको यात्रा',
+        aiSolution: 'चुनौतीहरू र समाधान',
+        aiGoodNews: 'पर्खिरहेको शुभ समाचार',
+        aiAdvice: 'भविष्यको लागि सल्लाह',
+        guestNotice: '* अतिथि मोड (आजको राशिफल देखाइँदैछ)',
+        todayDate: 'आज'
+    },
+    si: {
+        happyBirthday: 'උපන්දින සුභ පැතුම්',
+        yourZodiac: 'ඔබේ සත්ව ලකුණ',
+        zodiacSymbol: 'ලකුණේ සංකේතය',
+        tapToFlip: 'විස්තර සඳහා තට්ටු කරන්න',
+        tapToFlipBack: 'ආපසු යාමට තට්ටු කරන්න',
+        character: 'අයිති',
+        fortune: 'වාසනාව',
+        love: 'ආදරය',
+        money: 'මුදල්',
+        study: 'ඉගෙනීම',
+        health: 'සෞඛ්‍ය',
+        newCard: 'නව කාඩ්පත',
+        createSubtitle: 'විශේෂ උපන්දින කාඩ්පතක් සාදන්න',
+        nameLabel: 'නම',
+        monthLabel: 'මාසය',
+        dayLabel: 'දිනය',
+        generate: 'කාඩ්පත සාදන්න',
+        back: 'ආපසු',
+        birthdayMsg: n => `🎉 ${n} 🎉\n\nඋපන්දින සුභ පැතුම්! 🥳\n\nමෙම වසර සතුටින් පිරී යාවි! 🌟\n\nජපන් භාෂාව ද තවත් හොඳ වේවි! 📚✨\n\nNICC හි සැමගෙන් 💖`,
+        loadingAi: '🔮 AI Gemini ඔබේ වසරේ වාසනාව ගණනය කරයි...',
+        aiHoroscopeTitle: '✨ AI Gemini හඳහන් වාර්තාව ✨',
+        aiPrediction: 'මේ වසරේ ගමන',
+        aiSolution: 'අභියෝග සහ විසඳුම්',
+        aiGoodNews: 'බලාපොරොත්තු වන සුභ ආරංචි',
+        aiAdvice: 'අනාගතයට උපදෙස්',
+        guestNotice: '* අමුත්තන්ගේ ප්‍රකාරය (අද දවසේ ලග්නය පෙන්වයි)',
+        todayDate: 'අද'
+    }
+};
+
+export const flags = { ja: '🇯🇵', id: '🇮🇩', en: '🇬🇧', zh: '🇨🇳', my: '🇲🇲', ne: '🇳🇵', si: '🇱🇰' };
+export const langNames = { ja: '日本語', id: 'Bahasa', en: 'English', zh: '中文', my: 'မြန်မာ', ne: 'नेपाली', si: 'සිංහල' };
+
+export function getZodiac(month, day) {
+    if ((month == 1 && day >= 20) || (month == 2 && day <= 18)) return 1;
+    if ((month == 2 && day >= 19) || (month == 3 && day <= 20)) return 2;
+    if ((month == 3 && day >= 21) || (month == 4 && day <= 19)) return 3;
+    if ((month == 4 && day >= 20) || (month == 5 && day <= 20)) return 4;
+    if ((month == 5 && day >= 21) || (month == 6 && day <= 20)) return 5;
+    if ((month == 6 && day >= 21) || (month == 7 && day <= 22)) return 6;
+    if ((month == 7 && day >= 23) || (month == 8 && day <= 22)) return 7;
+    if ((month == 8 && day >= 23) || (month == 9 && day <= 22)) return 8;
+    if ((month == 9 && day >= 23) || (month == 10 && day <= 22)) return 9;
+    if ((month == 10 && day >= 23) || (month == 11 && day <= 21)) return 10;
+    if ((month == 11 && day >= 22) || (month == 12 && day <= 21)) return 11;
+    return 0; // Capricorn (default for Dec 22 - Jan 19)
+}
+
+export function getFortune(seed) {
+    const r = ['★★★★★', '★★★★☆', '★★★★★', '★★★☆☆', '★★★★☆', '★★★★★', '★★★★☆', '★★★★★', '★★★☆☆', '★★★★☆'];
+    return {
+        love: r[Math.abs(seed * 7) % 10],
+        money: r[Math.abs(seed * 3) % 10],
+        study: r[Math.abs(seed * 11) % 10],
+        health: r[Math.abs(seed * 5) % 10]
+    };
+}

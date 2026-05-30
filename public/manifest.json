@@ -1,0 +1,24 @@
+{
+  "short_name": "Tomodachi",
+  "name": "Nihongo Tomodachi - Ulang Tahun & Zodiak NICC",
+  "description": "Aplikasi ramalan zodiak dan kartu ucapan ulang tahun spesial untuk teman-teman di NICC.",
+  "icons": [
+    {
+      "src": "pwa-icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "pwa-icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "display": "standalone",
+  "orientation": "portrait"
+}
