@@ -305,12 +305,17 @@ body {
     z-index: 10;
 }
 
-/* Gradient mesh background */
 .mesh-bg {
     position: fixed;
     inset: 0;
     z-index: -1;
     overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .mesh-bg {
+        display: none; /* Hide heavy gradient meshes on mobile for performance */
+    }
 }
 
 .mesh-orb {
@@ -320,6 +325,18 @@ body {
     opacity: 0.4;
     animation: gradient-shift 15s ease infinite;
     background-size: 200% 200%;
+}
+
+/* Scroll Animation Classes */
+.scroll-reveal {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+    transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.scroll-reveal.in-view {
+    opacity: 1;
+    transform: translateY(0) scale(1);
 }
 
 /* Button styles */

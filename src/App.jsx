@@ -405,7 +405,11 @@ export default function App() {
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        for (let i = 0; i < 80; i++) {
+        // Optimize particle count for mobile
+        const isMobile = window.innerWidth < 768;
+        const numParticles = isMobile ? 15 : 80;
+
+        for (let i = 0; i < numParticles; i++) {
             particles.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height - canvas.height,
@@ -446,6 +450,30 @@ export default function App() {
             window.removeEventListener('resize', resizeCanvas);
         };
     }, [route, currentName]);
+
+    // Scroll Reveal Intersection Observer
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('in-view');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        });
+
+        const timeout = setTimeout(() => {
+            const elements = document.querySelectorAll('.scroll-reveal');
+            elements.forEach((el) => observer.observe(el));
+        }, 100);
+
+        return () => {
+            clearTimeout(timeout);
+            observer.disconnect();
+        };
+    }, [route, aiHoroscope, showDetails]);
 
     // Mesh Background Orbs
     const orbs = [
@@ -864,7 +892,7 @@ export default function App() {
                         </div>
 
                         {/* Interactive 3D flip card */}
-                        <div className={`flip-card mb-6 ${flipped ? 'flipped' : ''}`} onClick={() => setFlipped(!flipped)}>
+                        <div className={`flip-card mb-6 scroll-reveal ${flipped ? 'flipped' : ''}`} onClick={() => setFlipped(!flipped)}>
                             <div className="flip-card-inner min-h-[560px]">
                                 {/* Front Side */}
                                 <div className="flip-card-front glass-card-strong p-6 md:p-8 flex flex-col items-center justify-center">
@@ -900,7 +928,7 @@ export default function App() {
                         </div>
 
                         {/* NICC Friends Wish */}
-                        <div className="glass-card p-6 md:p-8 mb-6 text-center">
+                        <div className="glass-card p-6 md:p-8 mb-6 text-center scroll-reveal">
                             <div className="flex justify-center gap-4 mb-4">
                                 <span className="clickable-emoji text-3xl" onClick={() => spawnEmoji('🎉')}>🎉</span>
                                 <span className="clickable-emoji text-3xl" onClick={() => spawnEmoji('🎂')}>🎂</span>
@@ -914,7 +942,7 @@ export default function App() {
                         </div>
 
                         {/* Interactive daily Fortune stars */}
-                        <div className="glass-card p-5 mb-6">
+                        <div className="glass-card p-5 mb-6 scroll-reveal">
                             <h3 className="text-white font-bold text-center mb-4 text-lg">{activeTranslations.fortune}</h3>
                             <div className="grid grid-cols-2 gap-3">
                                 <div className="bg-white/5 rounded-2xl p-4 text-center cursor-pointer hover:bg-white/10 transition-all border border-white/5" onClick={() => spawnEmoji('💖')}>
@@ -941,7 +969,7 @@ export default function App() {
                         </div>
 
                         {/* ===== AI HOROSCOPE CARD ===== */}
-                        <div className="glass-card-strong p-6 md:p-8 mb-6 border border-yellow-500/30 shadow-[0_0_30px_rgba(255,215,0,0.15)] relative">
+                        <div className="glass-card-strong p-6 md:p-8 mb-6 border border-yellow-500/30 shadow-[0_0_30px_rgba(255,215,0,0.15)] relative scroll-reveal">
                             {/* Decorative lighting background effect */}
                             <div className="absolute -top-10 -right-10 w-32 h-32 bg-yellow-500/10 rounded-full blur-2xl pointer-events-none" />
                             <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl pointer-events-none" />
