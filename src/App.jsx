@@ -1080,7 +1080,7 @@ export default function App() {
                                         {activeTranslations.aiHoroscopeTitle}
                                     </h3>
 
-                                    <div className="flex flex-col items-center justify-center bg-yellow-500/20 px-4 py-2 rounded-xl border border-yellow-500/30 text-center animate-pulse shadow-[0_0_15px_rgba(255,215,0,0.15)] mx-auto w-max mb-4 cursor-pointer hover:bg-yellow-500/30 transition-all" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
+                                    <div className="flex flex-col items-center justify-center bg-yellow-500/20 px-4 py-2 rounded-xl border border-yellow-500/30 text-center animate-pulse shadow-[0_0_15px_rgba(255,215,0,0.15)] mx-auto w-fit max-w-full mb-4 cursor-pointer hover:bg-yellow-500/30 transition-all" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
                                         <span className="text-yellow-400 text-sm font-bold tracking-wide">✨ {currentLang === 'id' ? 'Kartu Zodiak di atas telah diperbarui!' : currentLang === 'ja' ? '上の星座カードが更新されました！' : 'The Zodiac Card above has been updated!'} ✨</span>
                                         <span className="text-xl mt-1 animate-bounce inline-block">👆</span>
                                     </div>
