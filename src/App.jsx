@@ -291,16 +291,30 @@ export default function App() {
                 data = await fetchGeminiHoroscope(name, month, day, zName, lang);
             }
             
+            // Helper to safely extract string even if AI hallucinates an object (e.g., {"ja": "text"})
+            const extractStr = (val) => {
+                if (!val) return '';
+                if (typeof val === 'string') return val;
+                if (typeof val === 'object') {
+                    const values = Object.values(val);
+                    for (const v of values) {
+                        if (typeof v === 'string' && v.trim() !== '') return v;
+                    }
+                    return JSON.stringify(val); // Last resort to prevent [object Object]
+                }
+                return String(val);
+            };
+
             // Validate and sanitize data to prevent React rendering crashes
             const safeData = {
                 ...data,
-                birthdayWish: String(data?.birthdayWish || ''),
-                characterReading: String(data?.characterReading || ''),
-                zodiacMessage: String(data?.zodiacMessage || ''),
-                yearlyPrediction: String(data?.yearlyPrediction || ''),
-                solution: String(data?.solution || ''),
-                goodNews: String(data?.goodNews || ''),
-                futureAdvice: String(data?.futureAdvice || ''),
+                birthdayWish: extractStr(data?.birthdayWish),
+                characterReading: extractStr(data?.characterReading),
+                zodiacMessage: extractStr(data?.zodiacMessage),
+                yearlyPrediction: extractStr(data?.yearlyPrediction),
+                solution: extractStr(data?.solution),
+                goodNews: extractStr(data?.goodNews),
+                futureAdvice: extractStr(data?.futureAdvice),
                 luckScores: (typeof data?.luckScores === 'object' && data?.luckScores !== null) ? data.luckScores : {}
             };
             
