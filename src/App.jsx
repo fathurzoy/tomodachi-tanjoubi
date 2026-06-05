@@ -233,13 +233,6 @@ async function fetchGeminiHoroscope(name, month, day, zodiacName, language) {
     throw new Error(lastError ? `ALL_KEYS_FAILED: ${lastError.message}` : "ALL_KEYS_FAILED");
 }
 
-const melody = [
-    [261.63, 0.4], [261.63, 0.4], [293.66, 0.8], [261.63, 0.8], [349.23, 0.8], [329.63, 1.2],
-    [261.63, 0.4], [261.63, 0.4], [293.66, 0.8], [261.63, 0.8], [392.00, 0.8], [349.23, 1.2],
-    [261.63, 0.4], [261.63, 0.4], [523.25, 0.8], [440.00, 0.8], [349.23, 0.8], [329.63, 0.8], [293.66, 1.2],
-    [466.16, 0.4], [466.16, 0.4], [440.00, 0.8], [349.23, 0.8], [392.00, 0.8], [349.23, 1.2]
-];
-
 export default function App() {
     // Language & Routing State
     const [currentLang, setCurrentLang] = useState('ja');
@@ -265,13 +258,8 @@ export default function App() {
 
     // Audio Ref
     const [isPlaying, setIsPlaying] = useState(false);
-    const audioCtxRef = useRef(null);
-    const timeoutsRef = useRef([]);
-    const activePlayingRef = useRef(false);
+    const audioRef = useRef(null);
     const userHasInteractedRef = useRef(false);
-    const userIntentionallyPausedRef = useRef(false);
-    const currentNoteIndexRef = useRef(0);
-    const melodyLoopActiveRef = useRef(false);
 
     // Canvas Ref
     const canvasRef = useRef(null);
@@ -499,97 +487,25 @@ export default function App() {
 
     // Music Player Logic
     const startMusic = () => {
-        if (activePlayingRef.current) return;
-        userIntentionallyPausedRef.current = false;
-
-        // Create or reuse AudioContext - critical: must be done inside a user gesture on iOS
-        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-        if (!audioCtxRef.current) {
-            audioCtxRef.current = new AudioContextClass();
-        }
-        const ctx = audioCtxRef.current;
-
-        // iOS Safari suspends AudioContext until a user gesture resumes it
-        const resumeAndPlay = () => {
-            activePlayingRef.current = true;
+        if (!audioRef.current) return;
+        audioRef.current.play().then(() => {
             setIsPlaying(true);
-
-            if (melodyLoopActiveRef.current) return;
-            melodyLoopActiveRef.current = true;
-
-            const playTone = (freq, dur, startTime) => {
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.value = freq;
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                gain.gain.setValueAtTime(0.12, startTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, startTime + dur);
-                osc.start(startTime);
-                osc.stop(startTime + dur);
-            };
-
-            const scheduleNext = (index, startTime) => {
-                if (!activePlayingRef.current) {
-                    melodyLoopActiveRef.current = false;
-                    currentNoteIndexRef.current = index >= melody.length ? 0 : index;
-                    return;
-                }
-
-                if (index >= melody.length) {
-                    currentNoteIndexRef.current = 0;
-                    const timeoutId = setTimeout(() => {
-                        if (activePlayingRef.current) {
-                            scheduleNext(0, ctx.currentTime);
-                        } else {
-                            melodyLoopActiveRef.current = false;
-                        }
-                    }, 500);
-                    timeoutsRef.current.push(timeoutId);
-                    return;
-                }
-
-                const [freq, dur] = melody[index];
-                playTone(freq, dur, startTime);
-
-                const nextTime = startTime + dur;
-                const delayMs = (nextTime - ctx.currentTime) * 1000;
-
-                const timeoutId = setTimeout(() => {
-                    scheduleNext(index + 1, nextTime);
-                }, Math.max(0, delayMs - 50));
-
-                timeoutsRef.current.push(timeoutId);
-            };
-
-            scheduleNext(currentNoteIndexRef.current, ctx.currentTime);
-        };
-
-        if (ctx.state === 'suspended') {
-            ctx.resume().then(resumeAndPlay).catch(err => {
-                console.warn('AudioContext resume failed:', err);
-            });
-        } else {
-            resumeAndPlay();
-        }
+        }).catch(err => {
+            console.log("Audio play blocked by browser:", err);
+            setIsPlaying(false);
+        });
     };
 
-    const stopMusic = (intentional = false) => {
-        if (intentional) {
-            userIntentionallyPausedRef.current = true;
-        }
-        activePlayingRef.current = false;
+    const stopMusic = () => {
+        if (!audioRef.current) return;
+        audioRef.current.pause();
         setIsPlaying(false);
-        timeoutsRef.current.forEach(clearTimeout);
-        timeoutsRef.current = [];
-        melodyLoopActiveRef.current = false;
     };
 
     const toggleMusic = () => {
         userHasInteractedRef.current = true;
         if (isPlaying) {
-            stopMusic(true);
+            stopMusic();
         } else {
             startMusic();
         }
@@ -598,7 +514,9 @@ export default function App() {
     // Clean up audio on unmount
     useEffect(() => {
         return () => {
-            stopMusic(true);
+            if (audioRef.current) {
+                audioRef.current.pause();
+            }
         };
     }, []);
 
@@ -619,13 +537,12 @@ export default function App() {
 
         const handleVisibilityChange = () => {
             if (document.hidden) {
-                if (activePlayingRef.current) {
-                    stopMusic(false); // Auto pause (not intentional)
+                if (isPlaying) {
+                    audioRef.current?.pause();
                 }
             } else {
-                // Resume only if user didn't intentionally pause
-                if (!userIntentionallyPausedRef.current && userHasInteractedRef.current) {
-                    startMusic();
+                if (isPlaying && userHasInteractedRef.current) {
+                    audioRef.current?.play().catch(e => console.log(e));
                 }
             }
         };
@@ -858,6 +775,9 @@ export default function App() {
 
     return (
         <div className="min-h-screen flex flex-col relative overflow-x-hidden pb-10">
+            {/* Background Audio */}
+            <audio ref={audioRef} src="/happy_birthday_sine.mp3" loop preload="auto" />
+
             {/* Background Animations */}
             <canvas ref={canvasRef} className="particle-canvas" />
             <div className="mesh-bg">
