@@ -307,6 +307,12 @@ export default function App() {
             // Save success to sessionStorage cache
             setCachedHoroscope(name, month, day, lang, safeData);
             setAiHoroscope(safeData);
+            
+            // Auto flip card and scroll up so user sees the new reading
+            setFlipped(true);
+            setTimeout(() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 300);
         } catch (err) {
             console.error("AI fortune action failed after trying all keys:", err);
             const t = translations[lang] || translations['ja'];
@@ -537,12 +543,14 @@ export default function App() {
 
         const handleVisibilityChange = () => {
             if (document.hidden) {
-                if (isPlaying) {
-                    audioRef.current?.pause();
+                if (audioRef.current && !audioRef.current.paused) {
+                    audioRef.current.pause();
+                    audioRef.current.dataset.wasPlaying = 'true';
                 }
             } else {
-                if (isPlaying && userHasInteractedRef.current) {
-                    audioRef.current?.play().catch(e => console.log(e));
+                if (audioRef.current && audioRef.current.dataset.wasPlaying === 'true') {
+                    audioRef.current.play().catch(e => console.log(e));
+                    audioRef.current.dataset.wasPlaying = 'false';
                 }
             }
         };
@@ -1058,6 +1066,11 @@ export default function App() {
                                         {activeTranslations.aiHoroscopeTitle}
                                     </h3>
 
+                                    <div className="flex flex-col items-center justify-center bg-yellow-500/20 px-4 py-2 rounded-xl border border-yellow-500/30 text-center animate-pulse shadow-[0_0_15px_rgba(255,215,0,0.15)] mx-auto w-max mb-4 cursor-pointer hover:bg-yellow-500/30 transition-all" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
+                                        <span className="text-yellow-400 text-sm font-bold tracking-wide">✨ {currentLang === 'id' ? 'Kartu Zodiak di atas telah diperbarui!' : currentLang === 'ja' ? '上の星座カードが更新されました！' : 'The Zodiac Card above has been updated!'} ✨</span>
+                                        <span className="text-xl mt-1 animate-bounce inline-block">👆</span>
+                                    </div>
+
                                     <div className="bg-slate-950/40 p-4 rounded-2xl border border-white/5 shadow-inner text-center">
                                         <p className="text-xs font-bold text-yellow-400/80 uppercase tracking-widest mb-1.5 flex items-center justify-center gap-1.5">
                                             <span>💌</span> {activeTranslations.happyBirthday} Message
@@ -1086,38 +1099,41 @@ export default function App() {
                                         </button>
                                     </div>
 
-                                    {/* Expandable details with smooth transition */}
+                                    {/* Expandable details with smooth grid transition */}
                                     <div 
-                                         className={`transition-all duration-700 ease-in-out overflow-hidden space-y-4 pb-4 ${showDetails ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-                                         style={{ maxHeight: showDetails ? '3000px' : '0px' }}
+                                         className={`grid transition-all duration-500 ease-in-out ${showDetails ? 'grid-rows-[1fr] opacity-100 mt-4' : 'grid-rows-[0fr] opacity-0 pointer-events-none mt-0'}`}
                                     >
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                                            <div className="bg-slate-950/30 p-4 rounded-2xl border border-white/5 hover:border-yellow-500/10 transition-colors shadow-sm">
-                                                <p className="text-sm font-bold text-yellow-400 mb-1.5 flex items-center gap-1.5">
-                                                    <span>🌟</span> {activeTranslations.aiPrediction}
-                                                </p>
-                                                <p className="text-white/80 text-sm leading-relaxed text-left">{aiHoroscope.yearlyPrediction}</p>
-                                            </div>
-                                            <div className="bg-slate-950/30 p-4 rounded-2xl border border-white/5 hover:border-emerald-500/10 transition-colors shadow-sm">
-                                                <p className="text-sm font-bold text-emerald-400 mb-1.5 flex items-center gap-1.5">
-                                                    <span>🎁</span> {activeTranslations.aiGoodNews}
-                                                </p>
-                                                <p className="text-white/80 text-sm leading-relaxed text-left">{aiHoroscope.goodNews}</p>
-                                            </div>
-                                        </div>
+                                        <div className="overflow-hidden">
+                                            <div className="space-y-4 pb-4 pt-1">
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                                                    <div className="bg-slate-950/30 p-4 rounded-2xl border border-white/5 hover:border-yellow-500/10 transition-colors shadow-sm">
+                                                        <p className="text-sm font-bold text-yellow-400 mb-1.5 flex items-center gap-1.5">
+                                                            <span>🌟</span> {activeTranslations.aiPrediction}
+                                                        </p>
+                                                        <p className="text-white/80 text-sm leading-relaxed text-left">{aiHoroscope.yearlyPrediction}</p>
+                                                    </div>
+                                                    <div className="bg-slate-950/30 p-4 rounded-2xl border border-white/5 hover:border-emerald-500/10 transition-colors shadow-sm">
+                                                        <p className="text-sm font-bold text-emerald-400 mb-1.5 flex items-center gap-1.5">
+                                                            <span>🎁</span> {activeTranslations.aiGoodNews}
+                                                        </p>
+                                                        <p className="text-white/80 text-sm leading-relaxed text-left">{aiHoroscope.goodNews}</p>
+                                                    </div>
+                                                </div>
 
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <div className="bg-slate-950/30 p-4 rounded-2xl border border-white/5 hover:border-red-500/10 transition-colors shadow-sm">
-                                                <p className="text-sm font-bold text-red-400 mb-1.5 flex items-center gap-1.5">
-                                                    <span>🛠️</span> {activeTranslations.aiSolution}
-                                                </p>
-                                                <p className="text-white/80 text-sm leading-relaxed text-left">{aiHoroscope.solution}</p>
-                                            </div>
-                                            <div className="bg-slate-950/30 p-4 rounded-2xl border border-white/5 hover:border-cyan-500/10 transition-colors shadow-sm">
-                                                <p className="text-sm font-bold text-cyan-400 mb-1.5 flex items-center gap-1.5">
-                                                    <span>🧭</span> {activeTranslations.aiAdvice}
-                                                </p>
-                                                <p className="text-white/80 text-sm leading-relaxed text-left">{aiHoroscope.futureAdvice}</p>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    <div className="bg-slate-950/30 p-4 rounded-2xl border border-white/5 hover:border-red-500/10 transition-colors shadow-sm">
+                                                        <p className="text-sm font-bold text-red-400 mb-1.5 flex items-center gap-1.5">
+                                                            <span>🛠️</span> {activeTranslations.aiSolution}
+                                                        </p>
+                                                        <p className="text-white/80 text-sm leading-relaxed text-left">{aiHoroscope.solution}</p>
+                                                    </div>
+                                                    <div className="bg-slate-950/30 p-4 rounded-2xl border border-white/5 hover:border-cyan-500/10 transition-colors shadow-sm">
+                                                        <p className="text-sm font-bold text-cyan-400 mb-1.5 flex items-center gap-1.5">
+                                                            <span>🧭</span> {activeTranslations.aiAdvice}
+                                                        </p>
+                                                        <p className="text-white/80 text-sm leading-relaxed text-left">{aiHoroscope.futureAdvice}</p>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
